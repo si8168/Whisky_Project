@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="eye-catching-title">Results for "{{ query }}"</h1>
+
+<div class="recipe-grid">
+    {% for recipe in results %}
+    <div class="recipe-card-toggle">
+        <div class="recipe-image">
+            <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}">
+        </div>
+        <div class="recipe-info">
+            <span class="category-tag">{{ recipe.get_category_display }}</span>
+            <h2>{{ recipe.title }}</h2>
+            <p>{{ recipe.description|truncatewords:20 }}</p>
+            <div class="card-footer">
+                <a href="{% url 'edit_recipe' recipe.pk %}" class="view-btn">View Details</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div style="text-align: center; margin-top: 50px;">
+        <p>No recipes found matching "{{ query }}". Try searching for "Steak" or "Coriander"!</p>
+        <a href="/" style="color: var(--accent-brown);">Back to Home</a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

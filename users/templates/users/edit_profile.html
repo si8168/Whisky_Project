@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="edit-container" style="max-width: 600px; margin: 50px auto; background: var(--card-gray); padding: 30px; border: 1px solid var(--accent-brown);">
+    <h2 style="font-family: 'Playfair Display', serif; color: var(--accent-brown);">Edit Your Profile</h2>
+    
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div style="margin-top: 20px;">
+            <button type="submit" class="survey-btn">Save Changes</button>
+            <a href="{% url 'profile' %}" style="color: var(--text-cream); margin-left: 15px;">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

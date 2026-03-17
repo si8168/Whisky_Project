@@ -1,0 +1,89 @@
+{% load static %} <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noa's Eats | {{ title }}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-logo">NOA'S EATS</div>
+        
+        <ul class="nav-links">
+            <li><a href="{% url 'home' %}">Home</a></li>
+            
+            <li class="dropdown">
+                <button class="dropbtn">Daily Recipe ▼</button>
+                <div class="dropdown-content">
+                    <a href="{% url 'category_view' 'breakfast' %}">Breakfast</a>
+                    <a href="{% url 'category_view' 'lunch' %}">Lunch</a>
+                    <a href="{% url 'category_view' 'dinner' %}">Dinner</a>
+                    <a href="{% url 'category_view' 'dessert' %}">Dessert</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <button class="dropbtn">Health & Diet ▼</button>
+                <div class="dropdown-content">
+                    <a href="{% url 'category_view' 'keto' %}">Keto</a>
+                    <a href="{% url 'category_view' 'vegetarian' %}">Vegetarian</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <button class="dropbtn">Holidays ▼</button>
+                <div class="dropdown-content">
+                    <a href="{% url 'category_view' 'mothers-day' %}">Mother's Day</a>
+                    <a href="{% url 'category_view' 'new-year' %}">New Year</a>
+                </div>
+            </li>
+
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'recipe_create' %}">+ Post Recipe</a></li>
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+            {% else %}
+                <li><a href="{% url 'login' %}">Login</a></li>
+                <li><a href="{% url 'signup' %}">Sign Up</a></li>
+            {% endif %}
+
+            <li>
+                <form action="{% url 'search' %}" method="GET" class="search-bar">
+                    <input type="text" name="q" placeholder="Search recipes..." aria-label="Search">
+                    <button type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="mailto:noaseats@mail.com"><i class="fas fa-envelope"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+        </div>
+        
+        <div class="developer-info">
+            <p>Developed by: Noa's Eats</p>
+            <p>Email: noaseats@mail.com</p>
+            <p>
+                <a href="https://github.com/yourusername">GitHub</a> | 
+                <a href="https://linkedin.com/in/yourprofile">LinkedIn</a>
+            </p>
+        </div>
+        <p>&copy; 2026 Noa's Eats. All Rights Reserved.</p>
+    </footer>
+
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>
