@@ -23,3 +23,24 @@ window.onload = function() {
 function closeAd() {
     document.getElementById('survey-ad').style.display = 'none';
 }
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    const modal = document.getElementById("homeModal");
+    
+    // Check if the user has already seen the ad this session
+    if (!sessionStorage.getItem("adSeen")) {
+        setTimeout(() => {
+            modal.style.display = "flex";
+        }, 1500); // Pops up after 1.5 seconds
+    }
+
+    window.closeModal = function() {
+        modal.style.display = "none";
+        sessionStorage.setItem("adSeen", "true");
+    };
+
+    document.querySelector(".close-modal").onclick = closeModal;
+});
+

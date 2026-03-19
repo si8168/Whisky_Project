@@ -1,73 +1,65 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<section class="chefs-special" style="text-align: center; padding: 50px 0; background: var(--card-gray); margin-bottom: 40px; border-bottom: 2px solid var(--accent-brown);">
-    <h2 style="font-family: 'Playfair Display', serif; color: var(--accent-brown); font-size: 2.5rem; margin-bottom: 20px;">Chef's Special</h2>
-    <div class="video-container" style="max-width: 900px; margin: 0 auto; border: 3px solid var(--accent-brown); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-        <iframe width="100%" height="500" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<section class="family-favs" style="text-align: center; padding: 50px 0; background: var(--card-gray); margin-bottom: 40px; border-bottom: 2px solid var(--accent-brown); overflow: hidden;">
+    <h2 style="font-family: 'Playfair Display', serif; color: var(--accent-brown); font-size: 2.5rem; margin-bottom: 20px;">Chef's Specials!</h2>
+    
+    <div class="video-slider-container" style="position: relative; max-width: 900px; height: 500px; margin: 0 auto; border: 3px solid var(--accent-brown); box-shadow: 0 10px 30px rgba(0,0,0,0.5); overflow: hidden; background: #000;">
+        <video id="v1" class="slider-v" width="100%" height="100%" muted style="position: absolute; left: 0; top: 0; object-fit: cover; transition: transform 0.8s ease-in-out;">
+            <source src="{% static 'videos/toast.mp4' %}" type="video/mp4">
+        </video>
+        <video id="v2" class="slider-v" width="100%" height="100%" muted style="position: absolute; left: 100%; top: 0; object-fit: cover; transition: transform 0.8s ease-in-out;">
+            <source src="{% static 'videos/pancakes.mp4' %}" type="video/mp4">
+        </video>
+        <video id="v3" class="slider-v" width="100%" height="100%" muted style="position: absolute; left: 100%; top: 0; object-fit: cover; transition: transform 0.8s ease-in-out;">
+            <source src="{% static 'videos/paste.mp4' %}" type="video/mp4">
+        </video>
+        <video id="v4" class="slider-v" width="100%" height="100%" muted style="position: absolute; left: 100%; top: 0; object-fit: cover; transition: transform 0.8s ease-in-out;">
+            <source src="{% static 'videos/pizza.mp4' %}" type="video/mp4">
+        </video>
+        <video id="v5" class="slider-v" width="100%" height="100%" muted style="position: absolute; left: 100%; top: 0; object-fit: cover; transition: transform 0.8s ease-in-out;">
+            <source src="{% static 'videos/salad.mp4' %}" type="video/mp4">
+        </video>
+        <video id="v6" class="slider-v" width="100%" height="100%" muted style="position: absolute; left: 100%; top: 0; object-fit: cover; transition: transform 0.8s ease-in-out;">
+            <source src="{% static 'videos/dough-pizza.mp4' %}" type="video/mp4">
+        </video>
     </div>
 </section>
 
-<section class="community-feedback" style="padding: 60px 10%; background: var(--bg-black); margin-bottom: 40px;">
-    <h2 style="text-align: center; font-family: 'Playfair Display', serif; color: var(--text-cream); margin-bottom: 40px;">Community Feedback</h2>
-    <div class="feedback-grid" style="display: flex; gap: 30px; justify-content: center; flex-wrap: wrap;">
-        
-        <div class="feedback-card" style="flex: 1; min-width: 280px; background: var(--card-gray); padding: 25px; border-left: 5px solid var(--accent-brown); border-radius: 5px;">
-            <p style="font-style: italic; color: var(--text-cream);">"The Sunrise Avocado Toast is a game changer for my mornings! The chili oil kick is exactly what I needed."</p>
-            <p style="margin-top: 15px; font-weight: bold; color: var(--accent-brown);">- Sarah M.</p>
-        </div>
+<h2 style="text-align: center; font-family: 'Playfair Display', serif; margin-bottom: 30px; font-size: 2rem;">Discover Our Community Recipes</h2>
 
-        <div class="feedback-card" style="flex: 1; min-width: 280px; background: var(--card-gray); padding: 25px; border-left: 5px solid var(--accent-brown); border-radius: 5px;">
-            <p style="font-style: italic; color: var(--text-cream);">"Finally a place where I can find authentic Island flavors and healthy Keto options in one beautiful site."</p>
-            <p style="margin-top: 15px; font-weight: bold; color: var(--accent-brown);">- James T.</p>
-        </div>
-
-        <div class="feedback-card" style="flex: 1; min-width: 280px; background: var(--card-gray); padding: 25px; border-left: 5px solid var(--accent-brown); border-radius: 5px;">
-            <p style="font-style: italic; color: var(--text-cream);">"I love how easy it is to save recipes. The Sticky Toffee Pudding is already a family favorite!"</p>
-            <p style="margin-top: 15px; font-weight: bold; color: var(--accent-brown);">- Elena R.</p>
-        </div>
-
-    </div>
-</section>
-
-<h2 style="text-align: center; font-family: 'Playfair Display', serif; margin-bottom: 30px;">Discover Our Recipes</h2>
-<div class="recipe-grid">
+<div class="savvy-home-shelf" style="display: flex; overflow-x: auto; gap: 30px; padding: 20px 5% 40px; scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: var(--accent-brown) transparent;">
     {% for recipe in recipes %}
-        <div class="recipe-card-toggle" style="position: relative; z-index: 1;">
+        <div class="recipe-card-toggle" style="flex: 0 0 450px; scroll-snap-align: center; position: relative; background: var(--card-gray); border-radius: 15px; overflow: hidden; border: 1px solid #333; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
             
-            <div class="recipe-image-wrapper" style="position: relative; flex: 1; min-width: 500px; height: 500px; background: #000; overflow: hidden; cursor: pointer;">
-                <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" 
-                     style="width: 100%; height: 100%; object-fit: contain; display: block;">
-
-                <div class="image-hover-overlay">
-                    <a href="{% url 'recipe_detail' recipe.pk %}" class="view-recipe-btn">
+            <div class="recipe-image-wrapper" style="position: relative; height: 400px; background: #000; overflow: hidden; cursor: pointer;">
+                <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease;">
+                
+                <div class="image-hover-overlay" style="position: absolute; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;">
+                    <a href="{% url 'recipe_detail' recipe.pk %}" class="view-recipe-btn" style="padding: 12px 30px; border: 1px solid #fff; background: transparent; color: #fff; text-decoration: none; letter-spacing: 1px; font-family: 'Playfair Display', serif;">
                         View Recipe
                     </a>
                 </div>
             </div>
 
-            <div class="recipe-info">
-                <span class="category-tag">{{ recipe.category|title }}</span>
-                
-                <h2>
-                    <a href="{% url 'recipe_detail' recipe.pk %}" style="text-decoration: none; color: inherit;">
-                        {{ recipe.title }}
-                    </a>
+            <div class="recipe-info" style="padding: 20px; text-align: center;">
+                <span class="category-tag" style="background: var(--accent-brown); color: white; padding: 2px 10px; border-radius: 4px; font-size: 0.8rem;">{{ recipe.meal_type|title }}</span>
+                <h2 style="margin: 15px 0 5px;">
+                    <a href="{% url 'recipe_detail' recipe.pk %}" style="text-decoration: none; color: white; font-family: 'Playfair Display', serif;">{{ recipe.title }}</a>
                 </h2>
-                
-                <p>{{ recipe.description|truncatechars:100 }}</p>
+                <p style="font-size: 0.9rem; color: #bbb; margin-bottom: 15px;">{{ recipe.description|truncatechars:80 }}</p>
 
-                <div class="interaction-bar">
+                <div class="interaction-bar" style="border-top: 1px solid #333; padding-top: 15px;">
                     <form action="{% url 'like_recipe' recipe.pk %}" method="POST" style="display:inline;">
                         {% csrf_token %}
-                        <button type="submit" style="background:none; border:none; cursor:pointer;">
+                        <button type="submit" style="background:none; border:none; cursor:pointer; color: white; font-size: 1.1rem;">
                             {% if request.user in recipe.likes.all %}❤️{% else %}🤍{% endif %} {{ recipe.total_likes }}
                         </button>
                     </form>
-
-                    <form action="{% url 'save_recipe' recipe.pk %}" method="POST" style="display:inline; margin-left: 10px;">
+                    <form action="{% url 'save_recipe' recipe.pk %}" method="POST" style="display:inline; margin-left: 20px;">
                         {% csrf_token %}
-                        <button type="submit" style="background:none; border:none; cursor:pointer;">
+                        <button type="submit" style="background:none; border:none; cursor:pointer; color: white; font-size: 1.1rem;">
                             {% if request.user in recipe.saves.all %}🔖{% else %}🏳️{% endif %} {{ recipe.total_saves }}
                         </button>
                     </form>
@@ -75,11 +67,100 @@
             </div>
         </div>
     {% empty %}
-        <div style="text-align: center; margin-top: 100px; grid-column: 1 / -1;">
-            <h2 style="color: var(--accent-brown);">No recipes found!</h2>
-            <p>Try searching for something else, like "Steak" or "Pasta".</p>
-            <a href="/" class="survey-btn" style="margin-top: 20px; display: inline-block;">Back to Home</a>
+        <div style="width: 100%; text-align: center; padding: 80px 20px; background: var(--card-gray); border: 1px dashed var(--accent-brown); border-radius: 10px;">
+            <h2 style="color: var(--text-cream);">No recipes found!</h2>
+            <a href="{% url 'home' %}" class="view-recipe-btn">Back to All Recipes</a>
         </div>
     {% endfor %}
 </div>
+
+<section class="community-feedback" style="padding: 60px 10%; background: var(--bg-black); margin-top: 20px;">
+    <h2 style="text-align: center; font-family: 'Playfair Display', serif; color: var(--text-cream); margin-bottom: 40px;">Community Feedback</h2>
+    <div class="feedback-grid" style="display: flex; gap: 30px; justify-content: center; flex-wrap: wrap;">
+        <div class="feedback-card" style="flex: 1; min-width: 280px; background: var(--card-gray); padding: 25px; border-left: 5px solid var(--accent-brown); border-radius: 5px;">
+            <p style="font-style: italic; color: var(--text-cream);">"The Sunrise Avocado Toast is a game changer for my mornings! The chili oil kick is exactly what I needed."</p>
+            <p style="margin-top: 15px; font-weight: bold; color: var(--accent-brown);">- Sarah M.</p>
+        </div>
+        <div class="feedback-card" style="flex: 1; min-width: 280px; background: var(--card-gray); padding: 25px; border-left: 5px solid var(--accent-brown); border-radius: 5px;">
+            <p style="font-style: italic; color: var(--text-cream);">"Finally a place where I can find authentic Island flavors and healthy Keto options in one beautiful site."</p>
+            <p style="margin-top: 15px; font-weight: bold; color: var(--accent-brown);">- James T.</p>
+        </div>
+        <div class="feedback-card" style="flex: 1; min-width: 280px; background: var(--card-gray); padding: 25px; border-left: 5px solid var(--accent-brown); border-radius: 5px;">
+            <p style="font-style: italic; color: var(--text-cream);">"I love how easy it is to save recipes. The Sticky Toffee Pudding is already a family favorite!"</p>
+            <p style="margin-top: 15px; font-weight: bold; color: var(--accent-brown);">- Elena R.</p>
+        </div>
+    </div>
+</section>
+
+{% if not user.is_authenticated %}
+<div id="homeModal" class="modal-overlay">
+    <div class="modal-card">
+        <button class="close-modal" onclick="closeModal()">&times;</button>
+        <div class="modal-content">
+            <h2 style="font-family: 'Playfair Display', serif; color: var(--accent-brown); font-size: 2rem; margin-bottom: 10px;">Unlock the Full Vault</h2>
+            <p style="color: #bbb; font-size: 0.95rem; margin-bottom: 15px; line-height: 1.5;">
+                Sign up today to <strong>save</strong> your favorite bakes, <strong>like</strong> heritage recipes, and <strong>share</strong> your own culinary legacy.
+            </p>
+            <img src="{% static 'images/pop_up.jpg' %}" alt="Heritage Bake" style="width: 100%; border-radius: 12px; border: 1px solid #333; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.5);">
+            
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <a href="{% url 'register' %}" class="view-recipe-btn" style="text-decoration: none; padding: 14px; background: var(--accent-brown); color: white; border-radius: 8px; font-family: 'Playfair Display', serif; font-size: 1.1rem; letter-spacing: 1px; text-align: center;">
+                   Create Your Account
+                </a>
+                <a href="javascript:void(0)" onclick="closeModal()" style="color: #666; font-size: 0.85rem; text-decoration: none; font-family: 'Poppins', sans-serif; text-align: center;">
+                   Maybe later, I'll just browse
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script>
+    // Video Slider Logic
+    const videoList = document.querySelectorAll('.slider-v');
+    let currentIndex = 0;
+
+    function transitionVideos() {
+        const current = videoList[currentIndex];
+        currentIndex = (currentIndex + 1) % videoList.length;
+        const next = videoList[currentIndex];
+
+        next.style.transition = "none";
+        next.style.left = "100%";
+        next.style.transform = "translateX(0)";
+        
+        setTimeout(() => {
+            next.style.transition = "transform 0.8s ease-in-out, left 0.8s ease-in-out";
+            current.style.transform = "translateX(-100%)";
+            next.style.left = "0";
+            next.play();
+        }, 50);
+
+        setTimeout(() => {
+            current.style.transition = "none";
+            current.style.left = "100%";
+            current.style.transform = "translateX(0)";
+        }, 900);
+    }
+
+    if(videoList[0]) {
+        videoList[0].play();
+        videoList.forEach(vid => {
+            vid.onended = transitionVideos;
+        });
+    }
+
+    // Card Hover Logic
+    document.querySelectorAll('.recipe-card-toggle').forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            card.querySelector('.image-hover-overlay').style.opacity = '1';
+            card.querySelector('img').style.transform = 'scale(1.05)';
+        });
+        card.addEventListener('mouseleave', () => {
+            card.querySelector('.image-hover-overlay').style.opacity = '0';
+            card.querySelector('img').style.transform = 'scale(1)';
+        });
+    });
+</script>
 {% endblock %}

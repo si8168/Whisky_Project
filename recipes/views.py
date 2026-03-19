@@ -9,7 +9,6 @@ from .forms import RecipeForm
 # --- LIST VIEWS (Home, Popular, Category, Search) ---
 
 class RecipeListView(ListView):
-    """Phase 1: Displays the main recipe feed on the landing page."""
     model = Recipe
     template_name = 'recipes/home.html'
     context_object_name = 'recipes'
@@ -17,42 +16,46 @@ class RecipeListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = "Noa's Eats"
+        context['title'] = "Whisky" 
         return context
 
 def popular_recipes_view(request):
-    """Shows top 10 recipes based on likes."""
     popular_recipes = Recipe.objects.annotate(like_count=Count('likes')).order_by('-like_count')[:10]
     return render(request, 'recipes/home.html', {'recipes': popular_recipes, 'title': 'Popular Eats'})
 
-def category_view(request, category_name):
-    """Phase 1: Filters recipes by category (Breakfast, Lunch, Dinner, etc.)."""
-    recipes = Recipe.objects.filter(category__iexact=category_name).order_by('-created_at')
+def category_view(request, filter_type, value): 
+    filter_kwargs = {f"{filter_type}__iexact": value}
+    recipes = Recipe.objects.filter(**filter_kwargs).order_by('-created_at')
+    
     return render(request, 'recipes/home.html', {
-        'recipes': recipes, 
-        'title': category_name.replace('-', ' ').title()
+        'recipes': recipes,
+        'title': value.replace('-', ' ').title()
     })
 
 def search_view(request):
-    """Phase 2: Search bar functionality for keywords in title/ingredients."""
-    query = request.GET.get('q', '')
-    results = Recipe.objects.filter(
-        Q(title__icontains=query) | 
-        Q(description__icontains=query) | 
-        Q(ingredients__icontains=query)
-    ).distinct() if query else []
+    query = request.GET.get('q')
+    if query:
+        # UPDATED: Removed 'category' and added 'meal_type', 'diet_requirement', 'event_tag'
+        results = Recipe.objects.filter(
+            Q(title__icontains=query) | 
+            Q(description__icontains=query) |
+            Q(meal_type__icontains=query) |
+            Q(diet_requirement__icontains=query) |
+            Q(event_tag__icontains=query)
+        ).distinct()
+    else:
+        results = Recipe.objects.none()
+        
     return render(request, 'recipes/search_results.html', {'results': results, 'query': query})
 
 # --- DETAIL & CRUD VIEWS ---
 
 class RecipeDetailView(DetailView):
-    """Phase 1: Detailed view of a single recipe."""
     model = Recipe
     template_name = 'recipes/recipe_detail.html'
     context_object_name = 'recipe'
 
 class RecipeCreateView(LoginRequiredMixin, CreateView):
-    """Phase 2: Allows logged-in users to submit new recipes."""
     model = Recipe
     form_class = RecipeForm
     template_name = 'recipes/post_recipe.html'
@@ -62,7 +65,6 @@ class RecipeCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 class RecipeUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    """Phase 2: Allows authors to edit their own recipes."""
     model = Recipe
     form_class = RecipeForm
     template_name = 'recipes/post_recipe.html'
@@ -71,7 +73,6 @@ class RecipeUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return self.request.user == self.get_object().author
 
 class RecipeDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    """Phase 2: Allows authors to delete their own recipes."""
     model = Recipe
     success_url = '/'
     template_name = 'recipes/recipe_confirm_delete.html'
@@ -99,5 +100,20 @@ def save_recipe_view(request, pk):
         recipe.saves.add(request.user)
     return redirect(request.META.get('HTTP_REFERER', 'home'))
 
+# NEW: Profile View Added Here
+@login_required
+def profile_view(request):
+    # Pulls recipes linked to the user through likes, saves, or authorship
+    liked_recipes = request.user.liked_recipes.all()
+    saved_recipes = request.user.saved_recipes.all()
+    my_recipes = Recipe.objects.filter(author=request.user)
+    
+    return render(request, 'users/profile.html', {
+        'liked_recipes': liked_recipes,
+        'saved_recipes': saved_recipes,
+        'my_recipes': my_recipes,
+        'title': f"{request.user.username}'s Profile"
+    })
+
 def about_view(request):
-    return render(request, 'recipes/about.html', {'title': 'About Noa\'s Eats'})
+    return render(request, 'recipes/about.html', {'title': 'About Whisky'})

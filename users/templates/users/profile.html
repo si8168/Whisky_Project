@@ -1,91 +1,107 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="profile-header" style="text-align: center; padding: 50px 0; border-bottom: 1px solid var(--accent-brown);">
-    <img src="{{ user.profile_pic.url }}" alt="Profile" style="width: 150px; height: 150px; border-radius: 50%; border: 3px solid var(--accent-brown); object-fit: cover;">
-    <h1 class="eye-catching-title">{{ user.username }}</h1>
-    <p style="color: var(--accent-brown); font-weight: bold;">
-        From: {{ user.country }} 
-        <img src="https://countryflagsapi.netlify.app/flag/{{ user.country }}.png" alt="flag" style="height: 20px; vertical-align: middle;">
-    </p>
-    <p>{{ user.bio }}</p>
-    <a href="{% url 'edit_profile' %}" class="survey-btn" style="text-decoration: none;">Edit Profile</a>
-</div>
-
----
-
-<h2 style="margin-top: 40px; font-family: 'Playfair Display', serif; color: var(--accent-brown); border-bottom: 1px solid #333; padding-bottom: 10px;">My Shared Recipes</h2>
-<div class="recipe-grid">
-    {% for recipe in user_recipes %}
-    <div class="recipe-card-toggle">
-        <a href="{% url 'recipe_detail' recipe.pk %}" style="text-decoration: none; color: inherit;">
-            <div class="recipe-image" style="flex: 0 0 200px;">
-                <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" style="width: 100%; height: 200px; object-fit: cover;">
+<div class="profile-header" style="text-align: center; padding: 60px 0; background: linear-gradient(180deg, rgba(30,30,30,1) 0%, rgba(18,18,18,1) 100%); border-bottom: 1px solid #333;">
+    <div style="position: relative; display: inline-block;">
+        {% if user.profile_pic %}
+            <img src="{{ user.profile_pic.url }}" alt="Profile" style="width: 140px; height: 140px; border-radius: 50%; border: 2px solid var(--accent-brown); object-fit: cover; box-shadow: 0 10px 20px rgba(0,0,0,0.4);">
+        {% else %}
+            <div style="width: 140px; height: 140px; border-radius: 50%; border: 2px solid var(--accent-brown); background: var(--card-gray); display: inline-flex; align-items: center; justify-content: center; font-size: 3rem; color: var(--accent-brown);">
+                <i class="fas fa-user"></i>
             </div>
-            <div class="recipe-info">
-                <h3>{{ recipe.title }}</h3>
-                <p>Posted on: {{ recipe.created_at|date:"M d, Y" }}</p>
-            </div>
-        </a>
+        {% endif %}
     </div>
-    {% empty %}
-        <p style="color: #666;">You haven't shared any recipes yet!</p>
-    {% endfor %}
-</div>
 
-<h2 style="margin-top: 60px; font-family: 'Playfair Display', serif; color: #ff4b2b; border-bottom: 1px solid #333; padding-bottom: 10px;">Recipes I Liked ❤️</h2>
-<div class="recipe-grid">
-    {% for recipe in liked_recipes %}
-    <div class="recipe-card-toggle">
-        <a href="{% url 'recipe_detail' recipe.pk %}" style="text-decoration: none; color: inherit;">
-            <div class="recipe-image" style="flex: 0 0 200px;">
-                <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" style="width: 100%; height: 200px; object-fit: cover;">
-            </div>
-            <div class="recipe-info">
-                <h3>{{ recipe.title }}</h3>
-                <p>By: {{ recipe.author.username }}</p>
-            </div>
-        </a>
-    </div>
-    {% empty %}
-        <p style="color: #666;">You haven't liked any recipes yet.</p>
-    {% endfor %}
-</div>
-
-<h2 style="margin-top: 60px; font-family: 'Playfair Display', serif; color: #ffd700; border-bottom: 1px solid #333; padding-bottom: 10px;">Saved for Later 🔖</h2>
-<div class="recipe-grid">
-    {% for recipe in saved_recipes %}
-    <div class="recipe-card-toggle" style="border-color: #ffd700;">
-        <a href="{% url 'recipe_detail' recipe.pk %}" style="text-decoration: none; color: inherit;">
-            <div class="recipe-image" style="flex: 0 0 200px;">
-                <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" style="width: 100%; height: 200px; object-fit: cover;">
-            </div>
-        </a>
-        <div class="recipe-info">
-            <a href="{% url 'recipe_detail' recipe.pk %}" style="text-decoration: none; color: inherit;">
-                <h3>{{ recipe.title }}</h3>
-            </a>
-            <p>By: {{ recipe.author.username }}</p>
-            <div style="margin-top: 10px;">
-                <form action="{% url 'save_recipe' recipe.pk %}" method="POST" style="display: inline;">
-                    {% csrf_token %}
-                    <button type="submit" style="background: none; border: 1px solid #ff4444; color: #ff4444; cursor: pointer; padding: 2px 8px; border-radius: 4px;">Unsave</button>
-                </form>
-            </div>
-
-            <div class="interaction-bar">
-                <a href="{% url 'recipe_update' recipe.pk %}" class="survey-btn" style="background: #2a2a2a; font-size: 0.8rem;">Edit</a>
+    <h1 style="font-family: 'Playfair Display', serif; font-size: 2.8rem; margin-top: 20px; color: #fff; letter-spacing: 1px;">{{ user.username }}</h1>
     
-                <form action="{% url 'recipe_delete' recipe.pk %}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this recipe?');">
+    <div style="margin: 15px 0; font-family: 'Poppins', sans-serif;">
+        <span style="color: var(--accent-brown); font-weight: 500; letter-spacing: 1px; text-transform: uppercase; font-size: 0.9rem;">
+            {{ user.country|default:"World Traveller" }} 
+            {% if user.country %}
+                <img src="https://flagcdn.com/w40/{{ user.country|lower }}.png" alt="flag" style="height: 14px; margin-left: 8px; vertical-align: baseline; opacity: 0.8;">
+            {% endif %}
+        </span>
+    </div>
+    
+    <p style="max-width: 600px; margin: 0 auto 25px; line-height: 1.6; color: #aaa; font-style: italic;">"{{ user.bio|default:"Sharing my culinary journey with the Whisky community." }}"</p>
+    
+    <a href="{% url 'edit_profile' %}" class="view-recipe-btn" style="padding: 10px 25px; font-size: 0.85rem; border: 1px solid #444; background: transparent; transition: 0.3s;">
+        Edit Profile
+    </a>
+</div>
+
+<h2 style="margin-top: 60px; font-family: 'Playfair Display', serif; color: #fff; border-bottom: 1px solid #333; padding-bottom: 15px; letter-spacing: 1px;">My Shared Recipes</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; padding: 30px 0;">
+    {% for recipe in my_recipes %}
+    <div style="background: var(--card-gray); border-radius: 12px; overflow: hidden; border: 1px solid #333; transition: transform 0.3s ease;">
+        <a href="{% url 'recipe_detail' recipe.pk %}" style="display: block; height: 200px;">
+            {% if recipe.image %}
+                <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9;">
+            {% endif %}
+        </a>
+        <div style="padding: 20px;">
+            <h3 style="margin: 0 0 10px 0; font-size: 1.1rem; color: #fff;">{{ recipe.title }}</h3>
+            <p style="margin: 0 0 20px 0; font-size: 0.8rem; color: #777;">Published {{ recipe.created_at|date:"M d, Y" }}</p>
+            
+            <div style="display: flex; gap: 10px;">
+                <a href="{% url 'recipe_update' recipe.pk %}" style="flex: 1; text-align: center; padding: 8px; border: 1px solid #444; color: #bbb; text-decoration: none; border-radius: 6px; font-size: 0.75rem;">Edit</a>
+                <form action="{% url 'recipe_delete' recipe.pk %}" method="POST" style="flex: 1;" onsubmit="return confirm('Remove this recipe from Whisky?');">
                     {% csrf_token %}
-                    <button type="submit" class="survey-btn" style="background: #8b0000; font-size: 0.8rem;">Delete</button>
+                    <button type="submit" style="width: 100%; padding: 8px; background: transparent; border: 1px solid #500; color: #a33; border-radius: 6px; font-size: 0.75rem; cursor: pointer;">Delete</button>
                 </form>
             </div>
         </div>
     </div>
     {% empty %}
-        <p style="color: #666;">Your saved cookbook is empty.</p>
+        <p style="color: #666; grid-column: 1/-1; text-align: center; padding: 40px;">You haven't shared any recipes with the community yet.</p>
     {% endfor %}
 </div>
 
+<h2 style="margin-top: 60px; font-family: 'Playfair Display', serif; color: #ff4b2b; border-bottom: 1px solid #333; padding-bottom: 10px;">Recipes I Liked ❤️</h2>
+<div class="horizontal-scroll-wrapper" style="display: flex; overflow-x: auto; gap: 20px; padding: 20px 0;">
+    {% for recipe in liked_recipes %}
+    <div style="flex: 0 0 280px; background: var(--card-gray); border-radius: 12px; border: 1px solid #ff4b2b; overflow: hidden;">
+        <a href="{% url 'recipe_detail' recipe.pk %}" style="display: block; height: 200px;">
+            {% if recipe.image %}
+                <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+            {% endif %}
+        </a>
+        <div style="padding: 15px;">
+            <h3 style="margin: 0; font-size: 1.1rem; color: #fff;">{{ recipe.title }}</h3>
+            <p style="margin: 5px 0 15px 0; opacity: 0.7; font-size: 0.85rem;">By: {{ recipe.author.username }}</p>
+            <form action="{% url 'like_recipe' recipe.pk %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" style="width: 100%; background: none; border: 1px solid #ff4b2b; color: #ff4b2b; cursor: pointer; padding: 8px; border-radius: 6px; font-size: 0.8rem;">Unlike ❤️</button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<h2 style="margin-top: 60px; font-family: 'Playfair Display', serif; color: #ffd700; border-bottom: 1px solid #333; padding-bottom: 10px;">Saved for Later 🔖</h2>
+<div class="horizontal-scroll-wrapper" style="display: flex; overflow-x: auto; gap: 20px; padding: 20px 0;">
+    {% for recipe in saved_recipes %}
+    <div style="flex: 0 0 280px; background: var(--card-gray); border-radius: 12px; border: 1px solid #ffd700; overflow: hidden;">
+        <a href="{% url 'recipe_detail' recipe.pk %}" style="display: block; height: 200px;">
+            {% if recipe.image %}
+                <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+            {% endif %}
+        </a>
+        <div style="padding: 15px;">
+            <h3 style="margin: 0; font-size: 1.1rem; color: #fff;">{{ recipe.title }}</h3>
+            <p style="margin: 5px 0 15px 0; opacity: 0.7; font-size: 0.85rem;">By: {{ recipe.author.username }}</p>
+            <form action="{% url 'save_recipe' recipe.pk %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" style="width: 100%; background: none; border: 1px solid #ffd700; color: #ffd700; cursor: pointer; padding: 8px; border-radius: 6px; font-size: 0.8rem;">Unsave 🔖</button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+    .horizontal-scroll-wrapper::-webkit-scrollbar { height: 6px; }
+    .horizontal-scroll-wrapper::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+    .horizontal-scroll-wrapper::-webkit-scrollbar-track { background: transparent; }
+</style>
 {% endblock %}

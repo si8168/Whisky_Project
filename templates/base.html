@@ -1,53 +1,84 @@
-{% load static %} <!DOCTYPE html>
+{% load static %} 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Noa's Eats | {{ title }}</title>
+    <title>Whisky | {{ title }}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <nav class="navbar">
-        <div class="nav-logo">NOA'S EATS</div>
+        <a href="{% url 'home' %}" class="nav-logo" style="text-decoration: none; color: inherit;">WHISKY</a>
         
         <ul class="nav-links">
-            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'home' %}" style="{% if request.path == '/' %}color: var(--accent-brown); font-weight: bold;{% endif %}">Home</a></li>
             
+            <li><a href="{% url 'about' %}" style="{% if request.path == '/about/' %}color: var(--accent-brown); font-weight: bold;{% endif %}">About</a></li>
+
             <li class="dropdown">
-                <button class="dropbtn">Daily Recipe ▼</button>
+                <button class="dropbtn" style="{% if '/meal_type/' in request.path %}color: var(--accent-brown); font-weight: bold;{% endif %}">Daily Recipes ▼</button>
                 <div class="dropdown-content">
-                    <a href="{% url 'category_view' 'breakfast' %}">Breakfast</a>
-                    <a href="{% url 'category_view' 'lunch' %}">Lunch</a>
-                    <a href="{% url 'category_view' 'dinner' %}">Dinner</a>
-                    <a href="{% url 'category_view' 'dessert' %}">Dessert</a>
+                    <a href="{% url 'category_view' 'meal_type' 'breakfast' %}">Breakfast</a>
+                    <a href="{% url 'category_view' 'meal_type' 'lunch' %}">Lunch</a>
+                    <a href="{% url 'category_view' 'meal_type' 'dinner' %}">Dinner</a>
+                    <a href="{% url 'category_view' 'meal_type' 'dessert' %}">Dessert</a>
+                    <a href="{% url 'category_view' 'meal_type' 'drinks' %}">Drinks</a>
                 </div>
             </li>
 
             <li class="dropdown">
-                <button class="dropbtn">Health & Diet ▼</button>
+                <button class="dropbtn" style="{% if '/diet_requirement/' in request.path %}color: var(--accent-brown); font-weight: bold;{% endif %}">Health & Diet ▼</button>
                 <div class="dropdown-content">
-                    <a href="{% url 'category_view' 'keto' %}">Keto</a>
-                    <a href="{% url 'category_view' 'vegetarian' %}">Vegetarian</a>
+                    <a href="{% url 'category_view' 'diet_requirement' 'keto' %}">Keto</a>
+                    <a href="{% url 'category_view' 'diet_requirement' 'vegetarian' %}">Vegetarian</a>
+                    <a href="{% url 'category_view' 'diet_requirement' 'vegan' %}">Vegan</a>
                 </div>
             </li>
 
             <li class="dropdown">
-                <button class="dropbtn">Holidays ▼</button>
+                <button class="dropbtn" style="{% if '/event_tag/' in request.path %}color: var(--accent-brown); font-weight: bold;{% endif %}">Events ▼</button>
                 <div class="dropdown-content">
-                    <a href="{% url 'category_view' 'mothers-day' %}">Mother's Day</a>
-                    <a href="{% url 'category_view' 'new-year' %}">New Year</a>
+                    <a href="{% url 'category_view' 'event_tag' 'mothers-day' %}">Mother's Day</a>
+                    <a href="{% url 'category_view' 'event_tag' 'valentines-day' %}">Valentine's Day</a>
+                    <a href="{% url 'category_view' 'event_tag' 'christmas' %}">Christmas</a>
+                    <a href="{% url 'category_view' 'event_tag' 'st-patricks' %}">St. Patrick's</a>
+                    <a href="{% url 'category_view' 'event_tag' 'easter' %}">Easter</a>
+                    <a href="{% url 'category_view' 'event_tag' 'eid' %}">Eid</a>
+                    <a href="{% url 'category_view' 'event_tag' 'birthday' %}">Birthday</a>
                 </div>
             </li>
 
-            {% if user.is_authenticated %}
-                <li><a href="{% url 'recipe_create' %}">+ Post Recipe</a></li>
-                <li><a href="{% url 'logout' %}">Logout</a></li>
-            {% else %}
-                <li><a href="{% url 'login' %}">Login</a></li>
-                <li><a href="{% url 'signup' %}">Sign Up</a></li>
-            {% endif %}
+        {% if user.is_authenticated %}
+            <li>
+                <a href="{% url 'profile' %}" 
+                    style="{% if request.path == '/profile/' %}color: var(--accent-brown); font-weight: bold;{% endif %}">
+                    Profile
+                </a>
+            </li>
+            
+            <li>
+                <a href="{% url 'recipe_create' %}" 
+                    style="{% if request.path == '/post/' %}color: var(--accent-brown); font-weight: bold;{% endif %}">
+                    + Post Recipe
+                </a>
+            </li>
+            
+            <li>
+                <form id="logout-form" action="{% url 'logout' %}" method="POST" style="display: none;">
+                    {% csrf_token %}
+                </form>
+                <a href="javascript:void(0)" onclick="if(confirm('Are you sure you want to leave the Whisky Vault?')) { document.getElementById('logout-form').submit(); }">
+                    Logout
+                </a>
+            </li>
+        {% else %}
+            <li><a href="/login/">Login</a></li>
+            <li><a href="{% url 'register' %}">Sign Up</a></li>
+        {% endif %}
+
 
             <li>
                 <form action="{% url 'search' %}" method="GET" class="search-bar">
@@ -69,19 +100,19 @@
         <div class="social-icons">
             <a href="#"><i class="fab fa-facebook"></i></a>
             <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="mailto:noaseats@mail.com"><i class="fas fa-envelope"></i></a>
+            <a href="mailto:whisky@mail.com"><i class="fas fa-envelope"></i></a>
             <a href="#"><i class="fab fa-twitter"></i></a>
         </div>
         
         <div class="developer-info">
-            <p>Developed by: Noa's Eats</p>
-            <p>Email: noaseats@mail.com</p>
+            <p>Developed by: Whisky</p>
+            <p>Email: whisky@mail.com</p>
             <p>
                 <a href="https://github.com/yourusername">GitHub</a> | 
                 <a href="https://linkedin.com/in/yourprofile">LinkedIn</a>
             </p>
         </div>
-        <p>&copy; 2026 Noa's Eats. All Rights Reserved.</p>
+        <p>&copy; 2026 Whisky. All Rights Reserved.</p>
     </footer>
 
     <script src="{% static 'js/main.js' %}"></script>

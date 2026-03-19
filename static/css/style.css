@@ -10,6 +10,8 @@ body {
     color: var(--text-cream);
     font-family: 'Poppins', sans-serif;
     margin: 0;
+    /* Prevents horizontal overflow on the whole page */
+    overflow-x: hidden; 
 }
 
 /* --- Navigation --- */
@@ -19,19 +21,31 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 5%;
-    position: relative;
-    z-index: 1000; /* Higher z-index to stay above videos */
+    padding: 10px 5%;
+    position: sticky; /* Changed to sticky to keep it visible while scrolling */
+    top: 0;
+    z-index: 1000; 
     min-height: 80px;
+    /* The Fix: Ensures background stays solid even if content is wide */
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .nav-links {
-    list-style: none; /* REMOVES BULLET POINTS */
+    list-style: none;
     display: flex;
     align-items: center;
     gap: 25px;
     margin: 0;
     padding: 0;
+    /* The Fix: Allows links to wrap to a new line on small screens instead of cutting off */
+    flex-wrap: wrap; 
+    justify-content: flex-end;
+}
+
+.nav-links li {
+    display: flex;
+    align-items: center;
 }
 
 .nav-links a {
@@ -41,6 +55,7 @@ body {
     transition: color 0.3s ease;
     font-size: 1.1rem !important;
     letter-spacing: 0.5px;
+    white-space: nowrap; /* Prevents single words from breaking */
 }
 
 .nav-links a:hover, .dropbtn:hover {
@@ -58,16 +73,17 @@ body {
     border: none;
     color: var(--text-cream);
     font-family: 'Poppins', sans-serif;
-    font-size: 1.1rem; /* Matched to links */
+    font-size: 1.1rem;
     cursor: pointer;
     padding: 10px 15px;
     display: flex;
     align-items: center;
     gap: 5px;
+    white-space: nowrap;
 }
 
 .dropdown-content {
-    display: none; /* HIDDEN BY DEFAULT */
+    display: none;
     position: absolute;
     top: 100%;
     left: 0;
@@ -93,24 +109,26 @@ body {
     color: white;
 }
 
-/* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {
     display: block;
 }
 
 .nav-logo {
-    margin-right: 40px;
     font-family: 'Playfair Display', serif;
     font-weight: bold;
     font-size: 1.5rem;
+    color: var(--text-cream);
+    text-decoration: none;
+    white-space: nowrap;
 }
 
-/* --- Recipe Grid & Cards --- */
+/* --- Recipe Grid & Cards (Adjusted for Home/Search/Profile Shelves) --- */
+/* Note: Since we use inline-styles for the horizontal shelf, these handle the vertical grid fallback */
 .recipe-grid {
     display: flex;
     flex-direction: column;
     gap: 40px;
-    padding: 0 10% 50px 10%;
+    padding: 0 5% 50px 5%;
 }
 
 .recipe-card-toggle {
@@ -123,92 +141,18 @@ body {
     position: relative; 
 }
 
-.recipe-card-toggle:nth-child(even) {
-    flex-direction: row-reverse;
+/* Custom Scrollbar for Savvy Shelves */
+.savvy-home-shelf::-webkit-scrollbar,
+.horizontal-scroll-wrapper::-webkit-scrollbar {
+    height: 6px;
+}
+.savvy-home-shelf::-webkit-scrollbar-thumb,
+.horizontal-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: var(--accent-brown);
+    border-radius: 10px;
 }
 
-/* --- Responsive Image Styling --- */
-.recipe-image-wrapper {
-    flex: 1; 
-    min-width: 500px; /* Fixed standard width for large screens */
-    height: 500px;
-    background-color: #000;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.recipe-image-wrapper img {
-    max-width: 100%;
-    height: 100%;
-    object-fit: contain; /* Shows full image without cropping */
-    display: block;
-}
-
-/* Overlay & View Button */
-.image-hover-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: 10;
-}
-
-.recipe-image-wrapper:hover .image-hover-overlay {
-    opacity: 1;
-}
-
-.view-recipe-btn {
-    background-color: var(--accent-brown);
-    color: var(--text-cream);
-    padding: 12px 25px;
-    text-decoration: none;
-    font-weight: bold;
-    border-radius: 5px;
-    border: 2px solid var(--text-cream);
-    transition: transform 0.2s ease, background 0.3s;
-}
-
-.view-recipe-btn:hover {
-    transform: scale(1.1);
-    background-color: #5d432c;
-}
-
-/* --- Recipe Text Info --- */
-.recipe-info {
-    padding: 40px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    position: relative;
-}
-
-.recipe-info h2 a {
-    text-decoration: none;
-    color: var(--text-cream);
-    position: relative;
-    z-index: 11; 
-}
-
-/* --- Interactive Elements --- */
-.interaction-bar {
-    position: relative;
-    z-index: 20 !important;
-    display: flex;
-    gap: 15px;
-    margin-top: 20px;
-}
-
+/* --- Search Bar --- */
 .search-bar {
     display: flex;
     align-items: center;
@@ -216,7 +160,7 @@ body {
     border: 1px solid var(--accent-brown);
     border-radius: 25px;
     padding: 5px 15px;
-    margin-left: 20px;
+    margin-left: 10px;
 }
 
 .search-bar input {
@@ -225,17 +169,18 @@ body {
     color: white;
     padding: 8px;
     outline: none;
-    width: 150px;
+    width: 120px;
     transition: width 0.4s;
 }
 
 .search-bar input:focus {
-    width: 200px;
+    width: 180px;
 }
 
 .search-bar button {
     background: none;
     border: none;
+    color: var(--text-cream);
     cursor: pointer;
     font-size: 1rem;
 }
@@ -253,4 +198,37 @@ body {
 .developer-info a {
     color: var(--accent-brown);
     text-decoration: none;
+}
+
+
+/* Modal Overlay */
+.modal-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Modal Card */
+.modal-card {
+    background: #1a1a1a;
+    border: 1px solid var(--accent-brown);
+    padding: 30px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 450px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+}
+
+.close-modal {
+    position: absolute;
+    top: 10px; right: 20px;
+    background: none; border: none;
+    color: #fff; font-size: 2rem; cursor: pointer;
 }
