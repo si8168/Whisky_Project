@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="post-recipe-container">
+    <div class="glass-card">
+        <h1 class="vault-header">Add to the Culinary Vault</h1>
+        
+        <p class="vault-subtitle">
+            Every entry in the archive preserves a piece of history. 
+            Please ensure your descriptions are vivid and your instructions are precise. 
+            A professional archive requires at least five detailed sentences per method. 
+            Your contribution helps maintain the high standard of this collection. 
+            Carefully review your ingredients before locking them into the vault. 
+            Visuals should be high-quality to represent the dish's true heritage. 
+            Thank you for documenting this legacy for future generations.
+        </p>
+
+        <form method="POST" enctype="multipart/form-data" class="recipe-form whisky-form">
+            {% csrf_token %}
+            
+            <div class="form-section">
+                <h3><i class="fas fa-utensils"></i> Core Details</h3>
+                <div class="input-group">
+                    <label>Recipe Title</label>
+                    {{ form.title }}
+                </div>
+                
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>Meal Type</label>
+                        {{ form.meal_type }}
+                    </div>
+                    <div class="input-group">
+                        <label>Event Category</label>
+                        {{ form.event_tag }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3><i class="fas fa-leaf"></i> Dietary & Description</h3>
+                <div class="input-group">
+                    <label>Dietary Requirement</label>
+                    {{ form.diet_requirement }}
+                </div>
+                <div class="input-group">
+                    <label>Short Description</label>
+                    {{ form.description }}
+                    <small style="color: #666; margin-top: 5px; font-style: italic;">Give a brief cinematic overview of the dish.</small>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3><i class="fas fa-scroll"></i> The Method</h3>
+                <div class="input-group">
+                    <label>Detailed Ingredients</label>
+                    {{ form.ingredients }}
+                </div>
+                <div class="input-group">
+                    <label>Step-by-Step Instructions</label>
+                    {{ form.instructions }}
+                    <small style="color: #666; margin-top: 5px; font-style: italic;">Reminder: Use 5+ sentences for a professional finish.</small>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3><i class="fas fa-camera"></i> Visuals</h3>
+                <div class="input-group file-upload">
+                    <label>Upload Heritage Image</label>
+                    {{ form.image }}
+                </div>
+            </div>
+
+            <div class="form-actions" style="display: flex; align-items: center; justify-content: center; margin-top: 40px;">
+                <button type="submit" class="btn-vault-save">Lock into Vault</button>
+                <a href="{% url 'home' %}" class="btn-cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .post-recipe-container {
+        padding: 100px 20px;
+        background: var(--black);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+    }
+
+    .glass-card {
+        background: #0d0d0d;
+        border: 1px solid rgba(139, 94, 60, 0.2);
+        padding: 50px;
+        border-radius: 12px;
+        width: 100%;
+        max-width: 850px;
+        color: var(--text);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+    }
+
+    .vault-header {
+        font-family: 'Playfair Display', serif;
+        font-weight: 900;
+        font-size: 3.2rem;
+        color: var(--gold); 
+        text-align: center;
+        margin-bottom: 15px;
+        letter-spacing: 1px;
+        /* FIX: Removed 'lowercase' to allow Capitals */
+        text-transform: none; 
+    }
+
+    .vault-subtitle {
+        text-align: center;
+        color: #888;
+        margin-bottom: 50px;
+        font-style: italic;
+        letter-spacing: 0.5px;
+        line-height: 1.8;
+        max-width: 750px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .form-section {
+        background: rgba(255, 255, 255, 0.02);
+        padding: 30px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        border: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .form-section h3 {
+        color: var(--gold);
+        font-size: 1.1rem;
+        margin-bottom: 25px;
+        border-bottom: 1px solid var(--gold-dim);
+        padding-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+    }
+
+    .input-group label {
+        margin-bottom: 10px;
+        color: var(--gold);
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+        font-weight: 600;
+    }
+
+    .input-group input, 
+    .input-group select, 
+    .input-group textarea {
+        padding: 15px;
+        background: #1a1a1a !important;
+        border: 1px solid #333 !important;
+        border-radius: 4px;
+        color: #fff !important;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    select option {
+        background: #1a1a1a;
+        color: #fff;
+    }
+
+    .input-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+    }
+
+    .btn-vault-save {
+        background: var(--gold);
+        color: #000;
+        padding: 18px 60px;
+        border: none;
+        border-radius: 4px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        cursor: pointer;
+        transition: 0.4s;
+    }
+
+    .btn-vault-save:hover {
+        filter: brightness(1.2);
+        transform: translateY(-2px);
+    }
+
+    .btn-cancel {
+        color: #555;
+        text-decoration: none;
+        margin-left: 30px;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    @media (max-width: 768px) {
+        .input-grid { grid-template-columns: 1fr; }
+        .glass-card { padding: 30px; }
+        .vault-header { font-size: 2.2rem; }
+    }
+</style>
+{% endblock %}
