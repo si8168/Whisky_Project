@@ -1,120 +1,438 @@
-{% load static %} 
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Whisky | {{ title }}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+    <title>WHISKY | Global Culinary Vault</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <style>
+        /* BREATHTAKING NAV OVERRIDES */
+        :root {
+            --nav-bg: rgba(5, 5, 5, 0.0); /* Starts Transparent */
+            --nav-blur: 0px;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: var(--nav-bg);
+            backdrop-filter: blur(var(--nav-blur));
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border-bottom: 1px solid rgba(139, 94, 60, 0);
+            padding: 20px 0;
+        }
+
+        .navbar.scrolled {
+            --nav-bg: rgba(5, 5, 5, 0.9);
+            --nav-blur: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(139, 94, 60, 0.3);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 50px;
+        }
+
+        .nav-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: #fff !important;
+            letter-spacing: 6px;
+            text-decoration: none;
+            font-weight: 900;
+            transition: 0.3s;
+            z-index: 1001;
+        }
+
+        .nav-logo:hover {
+            color: var(--gold) !important;
+            text-shadow: 0 0 15px rgba(139, 94, 60, 0.5);
+        }
+
+        /* MOBILE MENU TOGGLE (The Hamburger) */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+            z-index: 1002;
+            padding: 10px;
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 28px;
+            height: 2px;
+            background: var(--gold);
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-menu a, .dropbtn {
+            color: #ddd;
+            text-decoration: none;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            transition: 0.3s;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px 0;
+            position: relative;
+        }
+
+        /* RESPONSIVE BREAKPOINT: Prevents Overlap */
+        @media (max-width: 1200px) {
+            .menu-toggle { display: flex; }
+            
+            .nav-menu {
+                position: fixed;
+                top: 0;
+                right: -100%; /* Hidden */
+                height: 100vh;
+                width: 300px;
+                background: rgba(5, 5, 5, 0.98);
+                backdrop-filter: blur(25px);
+                flex-direction: column;
+                justify-content: flex-start;
+                padding: 120px 40px;
+                transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+                border-left: 1px solid rgba(139, 94, 60, 0.2);
+                gap: 20px;
+                align-items: flex-start;
+            }
+
+            .nav-menu.active {
+                right: 0; /* Slide In */
+            }
+
+            .nav-search { margin-left: 0 !important; width: 100%; }
+            .nav-search input { width: 100% !important; }
+        }
+
+        .nav-menu a:hover { color: var(--gold); }
+
+        .dropdown-content {
+            background: rgba(10, 10, 10, 0.98) !important;
+            border: 1px solid rgba(139, 94, 60, 0.3);
+            backdrop-filter: blur(15px);
+            padding: 15px 0;
+            border-radius: 4px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            min-width: 200px;
+        }
+
+        /* ⚡ THE ELECTRIFYING HOVER FLASH ⚡ */
+        .dropdown-content a {
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            padding: 15px 25px !important;
+            display: block;
+            color: #bbb !important;
+            transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .dropdown-content a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(139, 94, 60, 0.4), transparent);
+            z-index: -1;
+        }
+
+        .dropdown-content a:hover::before {
+            left: 100%;
+            transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .dropdown-content a:hover {
+            color: #fff !important;
+            background: rgba(139, 94, 60, 0.15) !important;
+            padding-left: 35px !important;
+            text-shadow: 0 0 10px rgba(139, 94, 60, 0.8);
+        }
+
+        .nav-search {
+            display: flex;
+            align-items: center;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 30px;
+            padding: 5px 15px;
+            margin-left: 20px;
+            transition: 0.3s;
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar">
-        <a href="{% url 'home' %}" class="nav-logo" style="text-decoration: none; color: inherit;">WHISKY</a>
-        
-        <ul class="nav-links">
-            <li><a href="{% url 'home' %}" style="{% if request.path == '/' %}color: var(--accent-brown); font-weight: bold;{% endif %}">Home</a></li>
+
+    <nav class="navbar" id="mainNav">
+        <div class="nav-container">
+            <a href="{% url 'home' %}" class="nav-logo">WHISKY</a>
             
-            <li><a href="{% url 'about' %}" style="{% if request.path == '/about/' %}color: var(--accent-brown); font-weight: bold;{% endif %}">About</a></li>
+            <div class="menu-toggle" id="mobile-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
 
-            <li class="dropdown">
-                <button class="dropbtn" style="{% if '/meal_type/' in request.path %}color: var(--accent-brown); font-weight: bold;{% endif %}">Daily Recipes ▼</button>
-                <div class="dropdown-content">
-                    <a href="{% url 'category_view' 'meal_type' 'breakfast' %}">Breakfast</a>
-                    <a href="{% url 'category_view' 'meal_type' 'lunch' %}">Lunch</a>
-                    <a href="{% url 'category_view' 'meal_type' 'dinner' %}">Dinner</a>
-                    <a href="{% url 'category_view' 'meal_type' 'dessert' %}">Dessert</a>
-                    <a href="{% url 'category_view' 'meal_type' 'drinks' %}">Drinks</a>
+            <div class="nav-menu" id="nav-list">
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'about' %}">About</a> 
+
+                <div class="dropdown">
+                    <button class="dropbtn">Daily Recipes <i class="fas fa-chevron-down" style="font-size: 0.6rem; margin-left: 5px;"></i></button>
+                    <div class="dropdown-content">
+                        <a href="{% url 'category_view' 'meal_type' 'breakfast' %}">Breakfast</a>
+                        <a href="{% url 'category_view' 'meal_type' 'lunch' %}">Lunch</a>
+                        <a href="{% url 'category_view' 'meal_type' 'dinner' %}">Dinner</a>
+                        <a href="{% url 'category_view' 'meal_type' 'dessert' %}">Dessert</a>
+                        <a href="{% url 'category_view' 'meal_type' 'drinks' %}">Drinks</a>
+                    </div>
                 </div>
-            </li>
 
-            <li class="dropdown">
-                <button class="dropbtn" style="{% if '/diet_requirement/' in request.path %}color: var(--accent-brown); font-weight: bold;{% endif %}">Health & Diet ▼</button>
-                <div class="dropdown-content">
-                    <a href="{% url 'category_view' 'diet_requirement' 'keto' %}">Keto</a>
-                    <a href="{% url 'category_view' 'diet_requirement' 'vegetarian' %}">Vegetarian</a>
-                    <a href="{% url 'category_view' 'diet_requirement' 'vegan' %}">Vegan</a>
+                <div class="dropdown">
+                    <button class="dropbtn">Health and Diet<i class="fas fa-chevron-down" style="font-size: 0.6rem; margin-left: 5px;"></i></button>
+                    <div class="dropdown-content">
+                        <a href="{% url 'category_view' 'meal_type' 'casual-dining' %}">Casual Dining</a>
+                        <a href="{% url 'category_view' 'diet_requirement' 'vegan' %}">Vegan</a>
+                        <a href="{% url 'category_view' 'diet_requirement' 'vegetarian' %}">Vegetarian</a>
+                        <a href="{% url 'category_view' 'diet_requirement' 'keto' %}">Keto</a>
+                        <a href="{% url 'category_view' 'diet_requirement' 'high-protein' %}">High Protein</a> 
+                    </div>
                 </div>
-            </li>
 
-            <li class="dropdown">
-                <button class="dropbtn" style="{% if '/event_tag/' in request.path %}color: var(--accent-brown); font-weight: bold;{% endif %}">Events ▼</button>
-                <div class="dropdown-content">
-                    <a href="{% url 'category_view' 'event_tag' 'mothers-day' %}">Mother's Day</a>
-                    <a href="{% url 'category_view' 'event_tag' 'valentines-day' %}">Valentine's Day</a>
-                    <a href="{% url 'category_view' 'event_tag' 'christmas' %}">Christmas</a>
-                    <a href="{% url 'category_view' 'event_tag' 'st-patricks' %}">St. Patrick's</a>
-                    <a href="{% url 'category_view' 'event_tag' 'easter' %}">Easter</a>
-                    <a href="{% url 'category_view' 'event_tag' 'eid' %}">Eid</a>
-                    <a href="{% url 'category_view' 'event_tag' 'birthday' %}">Birthday</a>
+                <div class="dropdown">
+                    <button class="dropbtn">Holidays <i class="fas fa-chevron-down" style="font-size: 0.6rem; margin-left: 5px;"></i></button>
+                    <div class="dropdown-content" style="min-width: 220px;"> 
+                        <a href="{% url 'category_view' 'event_tag' 'eid' %}">Eid</a>
+                        <a href="{% url 'category_view' 'event_tag' 'ramadan' %}">Ramadan</a> 
+                        <a href="{% url 'category_view' 'event_tag' 'birthday' %}">Birthday</a>
+                        <a href="{% url 'category_view' 'event_tag' 'valentines-day' %}">Valentine's Day</a>
+                        <a href="{% url 'category_view' 'event_tag' 'mothers-day' %}">Mother's Day</a>
+                        <a href="{% url 'category_view' 'event_tag' 'christmas' %}">Christmas</a>
+                        <a href="{% url 'category_view' 'event_tag' 'easter' %}">Easter</a>
+                    </div>
                 </div>
-            </li>
 
-        {% if user.is_authenticated %}
-            <li>
-                <a href="{% url 'profile' %}" 
-                    style="{% if request.path == '/profile/' %}color: var(--accent-brown); font-weight: bold;{% endif %}">
-                    Profile
-                </a>
-            </li>
-            
-            <li>
-                <a href="{% url 'recipe_create' %}" 
-                    style="{% if request.path == '/post/' %}color: var(--accent-brown); font-weight: bold;{% endif %}">
-                    + Post Recipe
-                </a>
-            </li>
-            
-            <li>
-                <form id="logout-form" action="{% url 'logout' %}" method="POST" style="display: none;">
-                    {% csrf_token %}
-                </form>
-                <a href="javascript:void(0)" onclick="if(confirm('Are you sure you want to leave the Whisky Vault?')) { document.getElementById('logout-form').submit(); }">
-                    Logout
-                </a>
-            </li>
-        {% else %}
-            <li><a href="/login/">Login</a></li>
-            <li><a href="{% url 'register' %}">Sign Up</a></li>
-        {% endif %}
+                {% if user.is_authenticated %}
+                    <a href="{% url 'post_recipe' %}" style="color: var(--gold);">+ Vault Post</a>
+                    <a href="{% url 'profile' %}">Profile</a>
+                    <form id="logout-form" action="{% url 'logout' %}" method="POST" style="display: none;">{% csrf_token %}</form>
+                    <a href="javascript:void(0)" onclick="document.getElementById('logout-form').submit();" style="color: #ff4d4d; opacity: 0.8;">Logout</a>
+                {% else %}
+                    <a href="{% url 'login' %}">Login</a>
+                    <a href="{% url 'register' %}" style="color: var(--gold); border: 1px solid var(--gold); padding: 8px 20px; border-radius: 2px;">Sign Up</a>
+                {% endif %}
 
-
-            <li>
-                <form action="{% url 'search' %}" method="GET" class="search-bar">
-                    <input type="text" name="q" placeholder="Search recipes..." aria-label="Search">
-                    <button type="submit">
+                <form action="{% url 'search' %}" method="GET" class="nav-search">
+                    <input type="text" name="q" placeholder="Explore...">
+                    <button type="submit" style="background:none; border:none; color: var(--gold); cursor:pointer;">
                         <i class="fas fa-search"></i>
                     </button>
                 </form>
-            </li>
-        </ul>
+            </div>
+        </div>
     </nav>
 
-    <main class="container">
-        {% block content %}
-        {% endblock %}
+    {% if messages %}
+    <div class="messages-container" style="position: fixed; top: 100px; right: 20px; z-index: 2000;">
+        {% for message in messages %}
+            <div class="alert" style="background: rgba(10,10,10,0.9); border-left: 3px solid var(--gold); color: #fff; padding: 15px 30px; margin-bottom: 10px; backdrop-filter: blur(10px); font-size: 0.8rem; letter-spacing: 1px;">
+                {{ message|upper }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main>
+        {% block content %}{% endblock %}
     </main>
 
-    <footer class="footer">
-        <div class="social-icons">
-            <a href="#"><i class="fab fa-facebook"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="mailto:whisky@mail.com"><i class="fas fa-envelope"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
+    <footer class="footer" style="background: #000; border-top: 1px solid rgba(139, 94, 60, 0.2); padding: 100px 0 60px; position: relative; text-align: center; overflow: hidden;">
+
+        <div style="position: absolute; 
+                    top: 50%; 
+                    left: 50%; 
+                    transform: translate(-50%, -50%); 
+                    font-family: 'Playfair Display', serif; 
+                    font-size: 550px; 
+                    font-weight: 900; 
+                    color: var(--gold); 
+                    opacity: 0.03; 
+                    z-index: 1; 
+                    pointer-events: none; 
+                    user-select: none;
+                    text-shadow: 0 0 20px rgba(139, 94, 60, 0.2);">
+            W
         </div>
-        
-        <div class="developer-info">
-            <p>Developed by: Whisky</p>
-            <p>Email: whisky@mail.com</p>
-            <p>
-                <a href="https://github.com/yourusername">GitHub</a> | 
-                <a href="https://linkedin.com/in/yourprofile">LinkedIn</a>
-            </p>
+
+        <div style="position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background-image: url('{% static 'images/whisky_footer_background.png' %}'); 
+            background-size: cover; 
+            background-repeat: no-repeat; 
+            background-position: center;
+            opacity: 0.04; 
+            filter: grayscale(100%) brightness(120%); 
+            z-index: 1; 
+            pointer-events: none;">
         </div>
-        <p>&copy; 2026 Whisky. All Rights Reserved.</p>
+
+        <div class="footer-container" style="max-width: 1000px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 2;">
+            
+            <div style="margin-bottom: 60px;">
+                <div class="footer-logo" style="font-family: 'Playfair Display'; font-size: 2.5rem; color: var(--gold); letter-spacing: 12px; margin-bottom: 20px; font-weight: 900; display: inline-block;">
+                    WHISKY
+                </div>
+                <p style="color: #666; font-size: 1rem; line-height: 1.8; max-width: 600px; margin: 0 auto;">
+                    Preserving the evolution of global gastronomy through digital documentation. A sanctuary for the world's most cherished culinary archives.
+                </p>
+            </div>
+
+            <div style="max-width: 500px; margin: 0 auto 80px; padding: 40px; border: 1px solid rgba(139, 94, 60, 0.1); background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(10px);">
+                <p style="color: var(--gold); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 4px; margin-bottom: 25px; font-weight: 700;">Join the Inner Archive</p>
+                <form action="#" style="display: flex; flex-direction: column; gap: 15px; align-items: center;">
+                    <input type="email" placeholder="ENTER YOUR EMAIL ADDRESS" 
+                        style="background: #000; border: 1px solid #333; padding: 15px; color: #fff; width: 100%; text-align: center; outline: none; font-size: 0.8rem; letter-spacing: 1px; transition: 0.3s;"
+                        onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='#333'">
+                    <button type="submit" style="background: var(--gold); border: none; padding: 15px 40px; color: #000; font-weight: 900; cursor: pointer; letter-spacing: 3px; font-size: 0.75rem; text-transform: uppercase; width: 100%; transition: 0.3s;">
+                        JOIN THE LEGACY
+                    </button>
+                </form>
+            </div>
+
+            <div style="display: flex; justify-content: center; gap: 80px; flex-wrap: wrap; margin-bottom: 60px;">
+                <div style="min-width: 150px;">
+                    <p style="color: #fff; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 25px; font-weight: 700;">The Vault</p>
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <a href="{% url 'home' %}" class="footer-link-savvy">Home Archive</a>
+                        <a href="{% url 'about' %}" class="footer-link-savvy">Our Story</a>
+                        <a href="{% url 'popular' %}" class="footer-link-savvy">Hall of Fame</a>
+                    </div>
+                </div>
+
+                <div style="min-width: 150px;">
+                    <p style="color: #fff; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 25px; font-weight: 700;">Security</p>
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <a href="#" class="footer-link-savvy">Terms of Access</a>
+                        <a href="#" class="footer-link-savvy">Privacy Protocol</a>
+                        <a href="mailto:whisky@mail.com" class="footer-link-savvy">Vault Support</a>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: center; gap: 30px; font-size: 1.3rem; margin-bottom: 80px;">
+                <a href="#" class="social-icon-savvy"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-icon-savvy"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-icon-savvy"><i class="fab fa-pinterest-p"></i></a>
+                <a href="mailto:whisky@mail.com" class="social-icon-savvy"><i class="fas fa-envelope"></i></a>
+            </div>
+
+            <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 50px;">
+                <a href="#" style="text-decoration: none; color: var(--gold); background: rgba(139, 94, 60, 0.1); padding: 12px 30px; border: 1px solid var(--gold); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 4px; transition: 0.3s; display: inline-flex; align-items: center; gap: 10px; margin-bottom: 30px;" 
+                onmouseover="this.style.background='var(--gold)'; this.style.color='#000'" onmouseout="this.style.background='rgba(139, 94, 60, 0.1)'; this.style.color='var(--gold)'">
+                    TOP OF VAULT <i class="fas fa-arrow-up"></i>
+                </a>
+                <div style="color: #444; font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; line-height: 2;">
+                    &copy; 2026 WHISKY VAULT | ALL RIGHTS RESERVED <br> 
+                    <span style="opacity: 0.5;">DEVELOPED BY WHISKY ARCHITECTURE</span>
+                </div>
+            </div>
+        </div>
     </footer>
 
-    <script src="{% static 'js/main.js' %}"></script>
+    <style>
+        .footer-link-savvy {
+            color: #777;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: 0.3s ease;
+            display: inline-block;
+        }
+        .footer-link-savvy:hover {
+            color: var(--gold);
+            letter-spacing: 4px;
+        }
+        .social-icon-savvy {
+            color: #555;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .social-icon-savvy:hover {
+            color: var(--gold);
+            transform: scale(1.4);
+            text-shadow: 0 0 15px rgba(139, 94, 60, 0.5);
+        }
+    </style>
+<script>
+    // 🟢 1. NAVIGATION & SCROLL LOGIC
+    window.onscroll = function() {
+        const nav = document.getElementById('mainNav');
+        if (window.scrollY > 50) nav.classList.add('scrolled');
+        else nav.classList.remove('scrolled');
+    };
+
+    const toggle = document.getElementById('mobile-toggle');
+    const list = document.getElementById('nav-list');
+    if (toggle && list) {
+        toggle.addEventListener('click', () => { list.classList.toggle('active'); });
+    }
+
+    // 🟢 2. THE MASTER AD CONTROLLER 🟢
+    const LOCK_KEY = 'VAULT_FINAL_LOCK';
+
+    window.closeModal = function() {
+        const modal = document.getElementById('homeModal');
+        if (modal) {
+            modal.style.display = 'none';
+            // Set permanent flag in browser
+            localStorage.setItem(LOCK_KEY, 'true');
+            console.log("Vault security engaged: Ad locked."); 
+        }
+    };
+
+    window.addEventListener('load', function() {
+        const modal = document.getElementById('homeModal');
+        const isLocked = localStorage.getItem(LOCK_KEY);
+
+        // Show ONLY if the modal exists and hasn't been locked yet
+        if (modal && isLocked !== 'true') {
+            setTimeout(() => { 
+                modal.style.display = 'flex'; 
+                modal.style.opacity = '0';
+                modal.style.transition = 'opacity 0.8s ease-in-out';
+                setTimeout(() => { modal.style.opacity = '1'; }, 50);
+            }, 2000); 
+        }
+    });
+</script>
+<script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>

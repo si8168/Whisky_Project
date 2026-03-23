@@ -21,6 +21,7 @@ def register(request):
 # --- PROFILE VIEW ---
 @login_required
 def profile_view(request):
+    # Pulls recipes linked to the user through authorship, likes, or saves
     user_recipes = Recipe.objects.filter(author=request.user).order_by('-created_at')
     liked_recipes = request.user.liked_recipes.all().order_by('-created_at')
     saved_recipes = request.user.saved_recipes.all().order_by('-created_at')
@@ -39,8 +40,9 @@ def saved_recipes_page(request):
 
 # --- EDIT PROFILE ---
 @login_required
-def edit_profile_view(request):
+def edit_profile(request):  # FIXED: Renamed from edit_profile_view to match urls.py
     if request.method == 'POST':
+        # instance=request.user ensures we update the current archivist, not create a new one
         form = UserUpdateForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             form.save()

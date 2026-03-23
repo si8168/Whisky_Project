@@ -9,7 +9,8 @@ urlpatterns = [
     path('profile/', views.profile_view, name='profile'),
 
     # --- Recipe Creation & Management ---
-    path('post/', views.RecipeCreateView.as_view(), name='recipe_create'),
+    # FIXED: name='post_recipe' to match your template tags in base.html/home.html
+    path('post/', views.RecipeCreateView.as_view(), name='post_recipe'),
     path('recipe/<int:pk>/', views.RecipeDetailView.as_view(), name='recipe_detail'),
     
     # NOTE: The name 'recipe_update' is what we must use in search_results.html
@@ -20,8 +21,8 @@ urlpatterns = [
     path('search/', views.search_view, name='search'),
     path('filter/<str:filter_type>/<str:value>/', views.category_view, name='category_view'),
 
-
     # --- Interactions ---
-    path('like/<int:pk>/', views.like_recipe_view, name='like_recipe'),
-    path('save/<int:pk>/', views.save_recipe_view, name='save_recipe'),
+    # FIXED: views.like_recipe and views.save_recipe to match the updated views.py
+    path('like/<int:pk>/', views.like_recipe, name='like_recipe'),
+    path('save/<int:pk>/', views.save_recipe, name='save_recipe'),
 ]

@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="auth-page-bg" style="background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)), url('{% static 'images/whisky_footer_background.png' %}'); background-size: cover; background-position: center; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 120px 20px 60px;">
+    
+    <div class="glass-card" style="width: 100%; max-width: 500px; padding: 50px; backdrop-filter: blur(15px); background: rgba(13, 13, 13, 0.95); border: 1px solid rgba(139, 94, 60, 0.3); border-radius: 12px; text-align: center;">
+        
+        <div style="margin-bottom: 30px;">
+            <i class="fas fa-exclamation-triangle" style="color: #8b0000; font-size: 3rem; margin-bottom: 20px; opacity: 0.8;"></i>
+            <h1 class="vault-header" style="font-size: 2.2rem; margin-bottom: 10px; color: #fff;">Purge Archive?</h1>
+            <p class="vault-subtitle" style="font-size: 0.9rem; color: #888; line-height: 1.6;">
+                You are about to permanently delete <br>
+                <span style="color: var(--gold); font-weight: 700; font-style: normal; letter-spacing: 1px;">"{{ object.title|upper }}"</span>
+            </p>
+            <p style="color: #555; font-size: 0.75rem; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px;">
+                This action cannot be reversed within the vault.
+            </p>
+        </div>
+        
+        <form method="POST" onsubmit="return confirm('FINAL WARNING: This will permanently erase this recipe from the Global Culinary Vault. Proceed?');">
+            {% csrf_token %}
+            
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <button type="submit" class="btn-vault-purge">
+                    Confirm Deletion
+                </button>
+                
+                <a href="{% url 'profile' %}" class="btn-cancel-vault">
+                    Abort & Return to Profile
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    /* THE PURGE BUTTON: Deep Red Metallic */
+    .btn-vault-purge {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, #4b0000 0%, #8b0000 50%, #4b0000 100%);
+        background-size: 200% auto;
+        color: #fff;
+        border: 1px solid rgba(255, 0, 0, 0.2);
+        border-radius: 4px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: 0.5s ease;
+    }
+
+    .btn-vault-purge:hover {
+        background-position: right center;
+        box-shadow: 0 0 20px rgba(139, 0, 0, 0.4);
+        transform: translateY(-2px);
+        filter: brightness(1.2);
+    }
+
+    /* THE ABORT BUTTON: Low-key grey */
+    .btn-cancel-vault {
+        color: #666;
+        text-decoration: none;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-weight: 700;
+        transition: 0.3s;
+        padding: 10px;
+    }
+
+    .btn-cancel-vault:hover {
+        color: #fff;
+        letter-spacing: 4px;
+    }
+</style>
+{% endblock %}
