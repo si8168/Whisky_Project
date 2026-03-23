@@ -35,7 +35,6 @@ def category_view(request, filter_type, value):
 def search_view(request):
     query = request.GET.get('q')
     if query:
-        # UPDATED: Removed 'category' and added 'meal_type', 'diet_requirement', 'event_tag'
         results = Recipe.objects.filter(
             Q(title__icontains=query) | 
             Q(description__icontains=query) |
@@ -83,7 +82,7 @@ class RecipeDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 # --- INTERACTION & STATIC VIEWS ---
 
 @login_required
-def like_recipe_view(request, pk):
+def like_recipe(request, pk):  # FIXED: Renamed to match template tags
     recipe = get_object_or_404(Recipe, pk=pk)
     if recipe.likes.filter(id=request.user.id).exists():
         recipe.likes.remove(request.user)
@@ -92,7 +91,7 @@ def like_recipe_view(request, pk):
     return redirect(request.META.get('HTTP_REFERER', 'home'))
 
 @login_required
-def save_recipe_view(request, pk):
+def save_recipe(request, pk):  # FIXED: Renamed to match template tags
     recipe = get_object_or_404(Recipe, pk=pk)
     if recipe.saves.filter(id=request.user.id).exists():
         recipe.saves.remove(request.user)
@@ -100,18 +99,17 @@ def save_recipe_view(request, pk):
         recipe.saves.add(request.user)
     return redirect(request.META.get('HTTP_REFERER', 'home'))
 
-# NEW: Profile View Added Here
 @login_required
 def profile_view(request):
-    # Pulls recipes linked to the user through likes, saves, or authorship
     liked_recipes = request.user.liked_recipes.all()
     saved_recipes = request.user.saved_recipes.all()
-    my_recipes = Recipe.objects.filter(author=request.user)
+    # FIXED: context variable renamed to 'user_recipes' to match profile.html
+    user_recipes = Recipe.objects.filter(author=request.user).order_by('-created_at')
     
     return render(request, 'users/profile.html', {
         'liked_recipes': liked_recipes,
         'saved_recipes': saved_recipes,
-        'my_recipes': my_recipes,
+        'user_recipes': user_recipes,
         'title': f"{request.user.username}'s Profile"
     })
 

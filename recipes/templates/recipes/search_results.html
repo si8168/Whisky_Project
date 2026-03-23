@@ -1,68 +1,74 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="search-results-container" style="padding: 40px 5%; min-height: 80vh;">
-    <div style="margin-bottom: 40px; border-bottom: 1px solid #333; padding-bottom: 20px;">
-        <h1 class="eye-catching-title" style="text-align: left; margin: 0;">Results for "{{ query }}"</h1>
-        <p style="color: #888; margin-top: 10px; font-family: 'Poppins', sans-serif;">
-            We found {{ results|length }} recipes matching your search.
+<div class="search-results-container" style="padding: 150px 8% 100px; min-height: 80vh; background: #050505;">
+    
+    <div style="margin-bottom: 60px; border-bottom: 1px solid rgba(139, 94, 60, 0.2); padding-bottom: 30px;">
+        <h1 class="playfair" style="color: var(--gold); font-size: 3rem; letter-spacing: 5px; text-transform: uppercase; margin: 0;">
+            Vault Query: <span style="color: #fff;">"{{ query }}"</span>
+        </h1>
+        <p style="color: #666; letter-spacing: 2px; text-transform: uppercase; font-size: 0.8rem; margin-top: 15px; font-family: 'Poppins', sans-serif;">
+            Archivist found {{ results|length }} artifacts matching your search criteria.
         </p>
     </div>
 
-    <div class="savvy-home-shelf" style="display: flex; overflow-x: auto; gap: 30px; padding: 20px 0 40px; scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: var(--accent-brown) transparent;">
+    <div class="savvy-home-shelf" style="display: flex; overflow-x: auto; gap: 40px; padding: 20px 0 60px; scroll-snap-type: x mandatory; scrollbar-width: none; -ms-overflow-style: none;">
         {% for recipe in results %}
-            <div class="recipe-card-toggle" style="flex: 0 0 450px; scroll-snap-align: center; position: relative; background: var(--card-gray); border-radius: 15px; overflow: hidden; border: 1px solid #333; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+            <div class="recipe-card-toggle" style="flex: 0 0 450px; scroll-snap-align: start; position: relative; background: #0a0a0a; border-radius: 4px; overflow: hidden; border: 1px solid rgba(139, 94, 60, 0.1); transition: 0.4s ease;">
                 
-                <div class="recipe-image-wrapper" style="position: relative; height: 400px; background: #000; overflow: hidden; cursor: pointer;">
+                <div class="recipe-image-wrapper" style="position: relative; height: 400px; background: #000; overflow: hidden; cursor: pointer;" onclick="window.location.href='{% url 'recipe_detail' recipe.pk %}'">
                     {% if recipe.image %}
-                        <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease;">
+                        <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.8s ease; filter: brightness(0.8);">
                     {% else %}
-                        <div style="width: 100%; height: 100%; background: #222; display: flex; align-items: center; justify-content: center; color: #555;">No Image</div>
+                        <div style="width: 100%; height: 100%; background: #111; display: flex; align-items: center; justify-content: center; color: #444;">No Artifact Image</div>
                     {% endif %}
                     
-                    <div class="image-hover-overlay" style="position: absolute; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;">
-                        <a href="{% url 'recipe_detail' recipe.pk %}" class="view-recipe-btn" style="padding: 12px 30px; border: 1px solid #fff; background: transparent; color: #fff; text-decoration: none; letter-spacing: 1px; font-family: 'Playfair Display', serif;">
-                            View Recipe
+                    <div class="image-hover-overlay" style="position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.4s ease; backdrop-filter: blur(5px);">
+                        <a href="{% url 'recipe_detail' recipe.pk %}" class="view-recipe-btn" style="padding: 12px 30px; border: 1px solid var(--gold); background: transparent; color: var(--gold); text-decoration: none; letter-spacing: 3px; font-size: 0.7rem; text-transform: uppercase; font-weight: 700;">
+                            Open Archive
                         </a>
                     </div>
                 </div>
 
-                <div class="recipe-info" style="padding: 20px; text-align: center;">
-                    <span class="category-tag" style="background: var(--accent-brown); color: white; padding: 2px 10px; border-radius: 4px; font-size: 0.8rem;">
+                <div class="recipe-info" style="padding: 30px; text-align: center;">
+                    <span class="category-tag" style="color: var(--gold); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 3px; opacity: 0.8;">
                         {{ recipe.get_meal_type_display }}
                     </span>
                     
-                    <h2 style="margin: 15px 0 5px;">
-                        <a href="{% url 'recipe_detail' recipe.pk %}" style="text-decoration: none; color: white; font-family: 'Playfair Display', serif;">{{ recipe.title }}</a>
+                    <h2 style="margin: 15px 0 10px;">
+                        <a href="{% url 'recipe_detail' recipe.pk %}" style="text-decoration: none; color: white; font-family: 'Playfair Display', serif; font-size: 1.6rem; letter-spacing: 1px;">{{ recipe.title }}</a>
                     </h2>
                     
-                    <p style="font-size: 0.9rem; color: #bbb; margin-bottom: 15px;">{{ recipe.description|truncatewords:15 }}</p>
+                    <p style="font-size: 0.9rem; color: #666; margin-bottom: 20px; line-height: 1.6;">{{ recipe.description|truncatewords:15 }}</p>
 
-                    <div class="interaction-bar" style="border-top: 1px solid #333; padding-top: 15px; display: flex; justify-content: center; gap: 20px; color: #888; font-size: 0.9rem;">
-                        <span>❤️ {{ recipe.total_likes }}</span>
-                        <span>🔖 {{ recipe.total_saves }}</span>
+                    <div class="interaction-bar" style="border-top: 1px solid rgba(139, 94, 60, 0.1); padding-top: 20px; display: flex; justify-content: center; gap: 25px; color: #444; font-size: 0.8rem; letter-spacing: 1px;">
+                        <span><i class="fas fa-heart" style="color: var(--gold); opacity: 0.5;"></i> {{ recipe.total_likes }}</span>
+                        <span><i class="fas fa-bookmark" style="color: var(--gold); opacity: 0.5;"></i> {{ recipe.total_saves }}</span>
                     </div>
                 </div>
             </div>
         {% empty %}
-            <div style="width: 100%; text-align: center; padding: 80px 20px; background: var(--card-gray); border: 1px dashed var(--accent-brown); border-radius: 10px;">
-                <i class="fas fa-search" style="font-size: 3rem; color: var(--accent-brown); margin-bottom: 20px;"></i>
-                <h2 style="font-family: 'Playfair Display', serif; color: var(--text-cream); margin-bottom: 10px;">No matches found!</h2>
-                <p style="color: var(--text-cream); opacity: 0.8; margin-bottom: 30px;">Try searching for ingredients like "Steak" or "Salmon".</p>
-                <a href="{% url 'home' %}" class="view-recipe-btn" style="display: inline-block; padding: 12px 30px; background: var(--accent-brown); color: white; text-decoration: none; border-radius: 5px;">Back to Home</a>
+            <div style="width: 100%; text-align: center; padding: 100px 20px; background: #0a0a0a; border: 1px solid rgba(139, 94, 60, 0.2); border-radius: 4px;">
+                <i class="fas fa-search" style="font-size: 3.5rem; color: var(--gold); opacity: 0.1; margin-bottom: 30px;"></i>
+                <h2 style="font-family: 'Playfair Display', serif; color: #fff; margin-bottom: 15px; letter-spacing: 2px;">No artifacts match your query.</h2>
+                <p style="color: #666; letter-spacing: 1px; margin-bottom: 40px; font-size: 0.9rem;">The archive contains no records for this specific search. Adjust your parameters.</p>
+                <a href="{% url 'home' %}" style="display: inline-block; padding: 15px 40px; border: 1px solid var(--gold); color: var(--gold); text-decoration: none; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 3px; transition: 0.3s;" onmouseover="this.style.background='var(--gold)'; this.style.color='#000'" onmouseout="this.style.background='transparent'; this.style.color='var(--gold)'">Return to Home</a>
             </div>
         {% endfor %}
     </div>
 </div>
 
+<style>
+    .savvy-home-shelf::-webkit-scrollbar { display: none; }
+</style>
+
 <script>
-    // Applying the same hover logic as the Home page
     document.querySelectorAll('.recipe-card-toggle').forEach(card => {
         card.addEventListener('mouseenter', () => {
             const overlay = card.querySelector('.image-hover-overlay');
             const img = card.querySelector('img');
             if(overlay) overlay.style.opacity = '1';
-            if(img) img.style.transform = 'scale(1.05)';
+            if(img) img.style.transform = 'scale(1.1)';
         });
         card.addEventListener('mouseleave', () => {
             const overlay = card.querySelector('.image-hover-overlay');
