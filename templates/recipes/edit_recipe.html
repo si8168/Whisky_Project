@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="edit-container" style="max-width: 800px; margin: 50px auto; background: var(--card-gray); padding: 40px; border: 1px solid var(--accent-brown);">
+    <h2 style="font-family: 'Playfair Display', serif; color: var(--accent-brown);">Update Recipe: {{ recipe.title }}</h2>
+    
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div style="margin-top: 30px;">
+            <button type="submit" class="survey-btn">Save Changes</button>
+            <a href="{% url 'home' %}" style="color: var(--text-cream); margin-left: 20px;">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="manifesto-hero" style="background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('{% static 'images/whisky_hero_background.png' %}');">
+    <h1 class="vault-header" style="font-size: 5rem; color: var(--gold); text-shadow: 0 10px 30px rgba(0,0,0,0.5);">The Manifesto</h1>
+    <p class="playfair" style="color: #fff; font-size: 1.2rem; letter-spacing: 5px; text-transform: uppercase; opacity: 0.8;">Preserving Global Gastronomy</p>
+</section>
+
+<section style="background: #000; width: 100%; border-bottom: 1px solid rgba(139, 94, 60, 0.2); position: relative; overflow: hidden;">
+    
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;">
+        
+        <div style="background-image: url('{% static 'images/whisky_about_background.png' %}');
+                    background-size: cover;
+                    background-position: center;
+                    background-attachment: fixed; /* Creates the cinematic depth */
+                    width: 100%;
+                    height: 100%;
+                    filter: brightness(45%) contrast(110%); /* Darkened for ultimate text pop */">
+        </div>
+        
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+                    background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 70%, rgba(0,0,0,1) 100%);">
+        </div>
+    </div>
+
+    <div style="max-width: 1000px; margin: 0 auto; padding: 180px 40px; text-align: center; position: relative; z-index: 2;">
+        
+        <div style="font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--gold); letter-spacing: 8px; text-transform: uppercase; margin-bottom: 30px; opacity: 0.7;">
+            The Archive
+        </div>
+
+        <h2 class="playfair" style="color: var(--gold); font-size: 4rem; margin-bottom: 45px; line-height: 1.1; letter-spacing: 1px; text-shadow: 0 5px 15px rgba(0,0,0,0.8);">
+            Beyond the Recipe!
+        </h2>
+        
+        <div style="max-width: 850px; margin: 0 auto; color: #fff; line-height: 2.2; font-size: 1.2rem; font-family: 'Poppins', sans-serif; text-shadow: 0 2px 10px rgba(0,0,0,0.9);">
+            <p style="margin-bottom: 30px;">
+                <span style="color: var(--gold); font-size: 2.5rem; font-family: 'Playfair Display'; font-weight: 900; float: left; margin-right: 15px; line-height: 1; margin-top: 8px;"></span>WHISKY was founded on a singular realization: the world's greatest culinary treasures aren't hidden in Michelin-starred vaults, but in the grease-stained notebooks of home kitchens and the shared memories of family tables. 
+            </p>
+            <p style="font-style: italic; color: rgba(255,255,255,0.8); letter-spacing: 0.5px; border-top: 1px solid rgba(139, 94, 60, 0.3); padding-top: 30px;">
+                We are more than a platform; we are a digital sanctuary for flavor. Our mission is to document the "unwritten" rules of cooking—the heavy-hitting meals that fuel a Friday night, the island-inspired feasts that bridge generations, and the precise chemistry of a perfectly balanced cocktail.
+            </p>
+        </div>
+    </div>
+</section>
+
+
+<section class="cta-section" style="background-image: linear-gradient(rgba(5,5,5,0.85), rgba(5,5,5,0.85)), url('{% static 'images/whisky_footer_background.png' %}'); background-size: cover; background-position: center; padding: 120px 20px; text-align: center;">
+    
+    <div style="position: relative; z-index: 10;">
+        <h2 class="playfair" style="color: var(--gold) !important; font-size: 3.5rem; margin-bottom: 20px; text-transform: none;">Ready to Begin?</h2>
+        <p style="color: #bbb !important; margin-bottom: 50px; font-style: italic; font-size: 1.2rem; letter-spacing: 1px;">
+            The vault doors are open for those who respect the art of the meal.
+        </p>
+        
+        <a href="{% url 'register' %}" 
+           class="vault-ghost-btn"
+           style="background-color: transparent !important; 
+                  border: 1px solid var(--gold) !important; 
+                  color: var(--gold) !important; 
+                  text-decoration: none !important; 
+                  display: inline-block !important; 
+                  padding: 18px 60px !important; 
+                  font-size: 1.1rem !important; 
+                  letter-spacing: 3px !important; 
+                  font-weight: 800 !important; 
+                  text-transform: uppercase !important;
+                  border-radius: 4px !important;
+                  transition: all 0.4s ease !important;
+                  box-shadow: 0 10px 30px rgba(0,0,0,0.6) !important;">
+            Create Your Archivist ID
+        </a>
+    </div>
+</section>
+
+<style>
+    .vault-ghost-btn:hover {
+        background-color: var(--gold) !important;
+        color: #000 !important;
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(139, 94, 60, 0.5) !important;
+    }
+</style>
+{% endblock %}

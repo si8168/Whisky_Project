@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="home-hero" style="height: 100vh; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #000;">
+    
+    <div class="video-slider-container" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1;">
+        <div style="position: absolute; inset: 0; background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)); z-index: 2;"></div> 
+        
+        <video id="v1" class="slider-v" width="100%" height="100%" muted playsinline style="position: absolute; left: 0; top: 0; object-fit: cover; transition: transform 0.8s ease-in-out;">
+            <source src="{% static 'videos/pizza.mp4' %}" type="video/mp4">
+        </video>
+        <video id="v2" class="slider-v" width="100%" height="100%" muted playsinline style="position: absolute; left: 100%; top: 0; object-fit: cover; transition: transform 0.8s ease-in-out;">
+            <source src="{% static 'videos/ramen.mp4' %}" type="video/mp4">
+        </video>
+        <video id="v3" class="slider-v" width="100%" height="100%" muted playsinline style="position: absolute; left: 100%; top: 0; object-fit: cover; transition: transform 0.8s ease-in-out;">
+            <source src="{% static 'videos/paste.mp4' %}" type="video/mp4">
+        </video>
+        <video id="v4" class="slider-v" width="100%" height="100%" muted playsinline style="position: absolute; left: 100%; top: 0; object-fit: cover; transition: transform 0.8s ease-in-out;">
+            <source src="{% static 'videos/pancakes.mp4' %}" type="video/mp4">
+        </video>
+        <video id="v5" class="slider-v" width="100%" height="100%" muted playsinline style="position: absolute; left: 100%; top: 0; object-fit: cover; transition: transform 0.8s ease-in-out;">
+            <source src="{% static 'videos/salad.mp4' %}" type="video/mp4">
+        </video>
+        <video id="v6" class="slider-v" width="100%" height="100%" muted playsinline style="position: absolute; left: 100%; top: 0; object-fit: cover; transition: transform 0.8s ease-in-out;">
+            <source src="{% static 'videos/dough-pizza.mp4' %}" type="video/mp4">
+        </video>
+    </div>
+
+    <div style="position: relative; z-index: 10; text-align: center; width: 100%; max-width: 900px; padding: 0 20px;">
+        <h2 class="playfair" style="color: var(--gold); font-size: 1.2rem; letter-spacing: 8px; text-transform: uppercase; margin-bottom: 20px; opacity: 0.9;">Chef's Favorites</h2>
+        <h1 class="playfair" style="color: #fff; font-size: clamp(3.5rem, 8vw, 6rem); margin-bottom: 10px; letter-spacing: 12px; text-transform: uppercase; line-height: 1;">WHISKY</h1>
+        <p style="color: var(--gold); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 50px; font-size: 0.9rem;">The Curator of Global Flavors</p>
+        
+        <form action="{% url 'search' %}" method="get" 
+            style="position: relative; display: flex; align-items: center; width: 100%; max-width: 850px; margin: 0 auto; background: rgba(13, 13, 13, 0.6); border: 1px solid rgba(139, 94, 60, 0.3); border-radius: 60px; backdrop-filter: blur(25px); padding: 8px; box-shadow: 0 30px 60px rgba(0,0,0,0.8); transition: 0.4s ease-in-out;">
+            
+            <input type="text" name="q" placeholder="Query the archive..." 
+                style="flex-grow: 1; min-width: 0; padding: 18px 35px; background: transparent !important; border: none; color: #fff; font-size: 1.1rem; outline: none; font-family: 'Poppins', sans-serif; letter-spacing: 1px;">
+            
+            <button type="submit" class="btn-vault-master" style="flex-shrink: 0; padding: 18px 45px; border-radius: 50px; cursor: pointer; border: none;">
+                Search Vault
+            </button>
+        </form>
+    </div>
+
+    <div style="position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); color: var(--gold); animation: bounce 2s infinite; z-index: 10;">
+        <i class="fas fa-chevron-down" style="font-size: 1.8rem; opacity: 0.6;"></i>
+    </div>
+</section>
+
+<section style="background: #000; padding: 120px 0;">
+    <h2 class="playfair" style="text-align: center; color: var(--gold); margin-bottom: 60px; font-size: 2.8rem; letter-spacing: 5px; text-transform: uppercase;">The Culinary Archive</h2>
+
+    <div class="savvy-home-shelf" style="display: flex; overflow-x: auto; gap: 40px; padding: 20px 5% 80px; scroll-snap-type: x mandatory; scrollbar-width: none; -ms-overflow-style: none;">
+        {% for recipe in recipes %}
+            <div class="recipe-card-toggle" style="flex: 0 0 420px; scroll-snap-align: center; background: #0a0a0a; border: 1px solid rgba(139, 94, 60, 0.1); transition: 0.5s cubic-bezier(0.165, 0.84, 0.44, 1); position: relative;">
+                <div class="recipe-image-wrapper" style="position: relative; height: 480px; overflow: hidden; cursor: pointer;">
+                    {% if recipe.image %}
+                        <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" style="width: 100%; height: 100%; object-fit: cover; transition: 0.8s ease;">
+                    {% endif %}
+                    <div class="image-hover-overlay" style="position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.4s ease; backdrop-filter: blur(5px);">
+                        <a href="{% url 'recipe_detail' recipe.pk %}" class="vault-edit-btn" style="padding: 15px 40px; border: 1px solid var(--gold); color: var(--gold); text-decoration: none; font-family: 'Playfair Display', serif; text-transform: uppercase; letter-spacing: 4px; font-size: 0.9rem;">
+                            Open Archive
+                        </a>
+                    </div>
+                </div>
+
+                <div class="recipe-info" style="padding: 40px 30px; text-align: center;">
+                    <span style="color: var(--gold); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 4px; border-bottom: 1px solid rgba(139, 94, 60, 0.3); padding-bottom: 8px;">{{ recipe.meal_type|title }}</span>
+                    <h3 style="margin: 25px 0 15px; font-family: 'Playfair Display', serif; font-size: 1.8rem; letter-spacing: 1px;">
+                        <a href="{% url 'recipe_detail' recipe.pk %}" style="text-decoration: none; color: #fff;">{{ recipe.title }}</a>
+                    </h3>
+                    <p style="font-size: 0.95rem; color: #777; margin-bottom: 30px; line-height: 1.8; height: 50px; overflow: hidden;">{{ recipe.description|truncatechars:75 }}</p>
+
+                    <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 25px; display: flex; justify-content: center; gap: 40px;">
+                        <form action="{% url 'like_recipe' recipe.pk %}" method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" style="background:none; border:none; cursor:pointer; color: var(--gold); font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+                                {% if request.user in recipe.likes.all %}❤️{% else %}🤍{% endif %} 
+                                <span style="color: #666; font-size: 0.9rem; font-family: 'Poppins';">{{ recipe.total_likes }}</span>
+                            </button>
+                        </form>
+                        <form action="{% url 'save_recipe' recipe.pk %}" method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" style="background:none; border:none; cursor:pointer; color: var(--gold); font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+                                {% if request.user in recipe.saves.all %}🔖{% else %}🏳️{% endif %} 
+                                <span style="color: #666; font-size: 0.9rem; font-family: 'Poppins';">{{ recipe.total_saves }}</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div style="width: 100%; text-align: center; padding: 120px 0; border: 1px dashed rgba(139, 94, 60, 0.2); margin: 0 8%;">
+                <p style="color: var(--gold); letter-spacing: 4px; font-size: 1.2rem;">THE VAULT IS CURRENTLY EMPTY</p>
+                <a href="{% url 'post_recipe' %}" class="vault-edit-btn" style="display: inline-block; margin-top: 30px; padding: 15px 40px; text-decoration: none; border: 1px solid var(--gold); color: var(--gold);">Begin the Legacy</a>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="whisky-feedback" style="background: #050505; padding: 120px 0; border-top: 1px solid rgba(139, 94, 60, 0.1);">
+    <h2 class="playfair" style="text-align: center; color: var(--gold); font-size: 2.5rem; margin-bottom: 80px; text-transform: uppercase; letter-spacing: 3px;">Voices from the Vault</h2>
+    <div class="feedback-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; max-width: 1400px; margin: 0 auto; padding: 0 40px;">
+        
+        <div class="feedback-card" style="background: #0a0a0a; padding: 40px; border: 1px solid rgba(255,255,255,0.03); transition: 0.4s;">
+            <p style="color: #888; font-style: italic; line-height: 1.8; margin-bottom: 20px;">"The instructions are a masterpiece. Truly cinematic."</p>
+            <span class="signature" style="color: var(--gold); letter-spacing: 2px; font-size: 0.8rem;">— SARAH M.</span>
+        </div>
+        
+        <div class="feedback-card" style="background: #0a0a0a; padding: 40px; border: 1px solid rgba(255,255,255,0.03);">
+            <p style="color: #888; font-style: italic; line-height: 1.8; margin-bottom: 20px;">"Finally, a library where flavors meet elite design."</p>
+            <span class="signature" style="color: var(--gold); letter-spacing: 2px; font-size: 0.8rem;">— JAMES T.</span>
+        </div>
+        
+        <div class="feedback-card" style="background: #0a0a0a; padding: 40px; border: 1px solid rgba(255,255,255,0.03);">
+            <p style="color: #888; font-style: italic; line-height: 1.8; margin-bottom: 20px;">"It's more than a site; it's a culinary experience."</p>
+            <span class="signature" style="color: var(--gold); letter-spacing: 2px; font-size: 0.8rem;">— AMARA W.</span>
+        </div>
+
+        <div class="feedback-card" style="background: #0a0a0a; padding: 40px; border: 1px solid rgba(255,255,255,0.03);">
+            <p style="color: #888; font-style: italic; line-height: 1.8; margin-bottom: 20px;">"The Vegan section is pure artistry. The Plant-Based Bolognese has become a weekly ritual."</p>
+            <span class="signature" style="color: var(--gold); letter-spacing: 2px; font-size: 0.8rem;">— OLIVER K.</span>
+        </div>
+
+        <div class="feedback-card" style="background: #0a0a0a; padding: 40px; border: 1px solid rgba(255,255,255,0.03);">
+            <p style="color: #888; font-style: italic; line-height: 1.8; margin-bottom: 20px;">"Finding Keto recipes that actually feel gourmet is rare. The WHISKY vault nailed the Low-Carb Steak Diane."</p>
+            <span class="signature" style="color: var(--gold); letter-spacing: 2px; font-size: 0.8rem;">— MARCUS V.</span>
+        </div>
+
+        <div class="feedback-card" style="background: #0a0a0a; padding: 40px; border: 1px solid rgba(255,255,255,0.03);">
+            <p style="color: #888; font-style: italic; line-height: 1.8; margin-bottom: 20px;">"The Vegetarian archives prove you don't need meat for a high-end experience. Incredible flavor."</p>
+            <span class="signature" style="color: var(--gold); letter-spacing: 2px; font-size: 0.8rem;">— CHLOE L.</span>
+        </div>
+    </div>
+</section>
+
+{% if not user.is_authenticated %}
+<div id="homeModal" class="modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(10px);">
+    <div class="modal-card" style="background: #0a0a0a; border: 1px solid var(--gold); width: 90%; max-width: 500px; padding: 50px; position: relative; text-align: center;">
+        <button class="close-modal" onclick="closeModal()" style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 2rem; color: var(--gold); cursor: pointer;">&times;</button>
+        <div class="modal-content">
+            <h2 class="playfair" style="color: var(--gold); font-size: 2.2rem; margin-bottom: 15px;">Unlock the Full Vault</h2>
+            <p style="color: #888; font-size: 1rem; margin-bottom: 25px; line-height: 1.6;">Sign up today to preserve favorites and share your culinary legacy.</p>
+            <img src="{% static 'images/pop_up.jpg' %}" alt="Heritage" style="width: 100%; border: 1px solid var(--gold-dim); margin-bottom: 25px;">
+            <div style="display: flex; flex-direction: column; gap: 20px; align-items: center; width: 100%;">
+                <a href="{% url 'register' %}" class="vault-btn" style="width: 100%; max-width: 300px; padding: 15px; background: var(--gold); color: #000; text-decoration: none; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;">Create Your Account</a>
+                <a href="javascript:void(0)" onclick="closeModal()" style="color: #555; text-decoration: none; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;">Maybe later, I'll just browse</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<style>
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {transform: translateY(0) translateX(-50%);}
+    40% {transform: translateY(-10px) translateX(-50%);}
+    60% {transform: translateY(-5px) translateX(-50%);}
+}
+
+.btn-vault-master {
+    background: linear-gradient(135deg, #8b5e3c 0%, #b8860b 50%, #8b5e3c 100%);
+    background-size: 200% auto;
+    color: #000;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.8rem;
+    transition: 0.5s ease;
+}
+.btn-vault-master:hover { background-position: right center; filter: brightness(1.1); }
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus {
+    -webkit-text-fill-color: white !important;
+    -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
+    transition: background-color 5000s ease-in-out 0s !important;
+}
+
+.savvy-home-shelf::-webkit-scrollbar { display: none; }
+.recipe-card-toggle:hover { border-color: var(--gold) !important; transform: translateY(-15px); box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
+.recipe-card-toggle:hover img { transform: scale(1.1); }
+.recipe-card-toggle:hover .image-hover-overlay { opacity: 1 !important; }
+.feedback-card:hover { border-color: var(--gold) !important; transform: translateY(-5px); }
+</style>
+
+
+<script>
+    const videoList = document.querySelectorAll('.slider-v');
+    let currentIndex = 0;
+    function transitionVideos() {
+        const current = videoList[currentIndex];
+        currentIndex = (currentIndex + 1) % videoList.length;
+        const next = videoList[currentIndex];
+        next.style.transition = "none";
+        next.style.left = "100%";
+        next.style.transform = "translateX(0)";
+        setTimeout(() => {
+            next.style.transition = "transform 0.8s ease-in-out, left 0.8s ease-in-out";
+            current.style.transform = "translateX(-100%)";
+            next.style.left = "0";
+            next.play();
+        }, 50);
+        setTimeout(() => {
+            current.style.transition = "none";
+            current.style.left = "100%";
+            current.style.transform = "translateX(0)";
+        }, 900);
+    }
+    if(videoList[0]) {
+        videoList[0].play();
+        videoList.forEach(vid => { vid.onended = transitionVideos; });
+    }
+</script>
+{% endblock %}

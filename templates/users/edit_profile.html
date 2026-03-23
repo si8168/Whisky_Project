@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container" style="padding: 100px 8%; display: flex; justify-content: center; background: #000;">
+    <div class="edit-container" style="width: 100%; max-width: 600px; background: #0a0a0a; padding: 40px; border: 1px solid var(--gold); box-shadow: 0 20px 50px rgba(0,0,0,0.8); position: relative; z-index: 2; overflow: visible;">
+        
+        <div style="text-align: center; margin-bottom: 40px;">
+            {% if user.profile_picture %}
+                <img src="{{ user.profile_picture.url }}" id="imagePreview" 
+                     style="width: 120px; height: 120px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; box-shadow: 0 0 20px rgba(139, 94, 60, 0.3); padding: 5px;">
+            {% else %}
+                <div id="imagePreview" style="width: 120px; height: 120px; border-radius: 50%; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; margin: 0 auto; background: rgba(139, 94, 60, 0.1);">
+                    <i class="fas fa-user-shield" style="color: var(--gold); font-size: 3rem;"></i>
+                </div>
+            {% endif %}
+            <p style="color: #666; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; margin-top: 15px;">Current Archivist Seal</p>
+        </div>
+
+        <h2 class="playfair" style="color: var(--gold); font-size: 2.2rem; margin-bottom: 30px; text-align: center; letter-spacing: 3px;">REFINE YOUR LEGACY</h2>
+        
+        <form method="POST" enctype="multipart/form-data" class="whisky-form" style="overflow: visible;">
+            {% csrf_token %}
+            
+            {% for field in form %}
+                <div style="margin-bottom: 25px; overflow: visible;">
+                    <label style="display: block; color: var(--gold); text-transform: uppercase; font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 10px;">
+                        {{ field.label }}
+                    </label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <p style="color: #ff4444; font-size: 0.75rem; margin-top: 5px;">{{ field.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <div style="margin-top: 40px; display: flex; align-items: center; gap: 25px;">
+                <button type="submit" class="vault-btn" style="flex-grow: 1; background: var(--gold); color: #000; border: none; padding: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: 0.3s;" onmouseover="this.style.background='#fff'" onmouseout="this.style.background='var(--gold)'">
+                    Save Changes
+                </button>
+                <a href="{% url 'profile' %}" style="color: #666; text-decoration: none; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#666'">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    /* Base styling for form elements */
+    .whisky-form input, .whisky-form textarea, .whisky-form select {
+        width: 100%;
+        background: rgba(255,255,255,0.05) !important;
+        border: 1px solid rgba(212, 175, 55, 0.2) !important;
+        color: #fff !important;
+        padding: 12px;
+        font-family: 'Poppins', sans-serif;
+        box-sizing: border-box;
+        transition: 0.3s;
+    }
+
+    .whisky-form input:focus, .whisky-form select:focus {
+        border-color: var(--gold) !important;
+        background: rgba(255,255,255,0.1) !important;
+        outline: none;
+    }
+
+    .whisky-form input[type="file"] {
+        padding: 10px;
+        font-size: 0.8rem;
+        color: #888;
+    }
+
+    /* 🟢 DROPDOWN FIXES */
+    .whisky-form select {
+        cursor: pointer;
+        position: relative;
+        z-index: 10;
+    }
+
+    /* Force the options list to be dark with white text */
+    .whisky-form select option {
+        background-color: #1a1a1a !important; 
+        color: #ffffff !important;
+        padding: 12px !important;
+    }
+
+    /* Prevent browser 'ghosting' issues on hover in the dropdown */
+    .whisky-form select:focus option {
+        background-color: #1a1a1a !important;
+        color: #fff !important;
+    }
+</style>
+
+<script>
+    const fileInput = document.querySelector('input[type="file"]');
+    if(fileInput) {
+        fileInput.onchange = evt => {
+            const [file] = fileInput.files;
+            if (file) {
+                const preview = document.getElementById('imagePreview');
+                if(preview.tagName !== 'IMG') {
+                    const newImg = document.createElement('img');
+                    newImg.id = 'imagePreview';
+                    newImg.style.cssText = "width: 120px; height: 120px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; box-shadow: 0 0 20px rgba(139, 94, 60, 0.3); padding: 5px;";
+                    preview.replaceWith(newImg);
+                    newImg.src = URL.createObjectURL(file);
+                } else {
+                    preview.src = URL.createObjectURL(file);
+                }
+            }
+        }
+    }
+</script>
+{% endblock %}

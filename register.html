@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="auth-page-bg" style="background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('{% static 'images/whisky_footer_background.png' %}'); background-size: cover; background-position: center; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 120px 20px 60px;">
+    <div class="glass-card" style="width: 100%; max-width: 450px; padding: 40px; backdrop-filter: blur(15px); background: rgba(13, 13, 13, 0.9); border: 1px solid rgba(139, 94, 60, 0.2); border-radius: 12px; box-shadow: 0 25px 50px rgba(0,0,0,0.5);">
+        <h1 class="vault-header" style="font-size: 2.2rem; margin-bottom: 5px; text-align: center;">Join the Vault</h1>
+        <p class="vault-subtitle" style="text-align: center; font-size: 0.8rem; margin-bottom: 30px;">Initialize your Archivist ID</p>
+        
+        <form method="POST" class="recipe-form whisky-form">
+            {% csrf_token %}
+            
+            <div class="form-section" style="background: transparent; border: none; padding: 0;">
+                <h3 style="border-bottom: 1px solid rgba(139, 94, 60, 0.3); font-size: 0.9rem; margin-bottom: 20px;"><i class="fas fa-user-shield"></i> Credentials</h3>
+                <div class="registration-form-fields">
+                    {{ form.as_p }}
+                </div>
+            </div>
+
+            <div class="form-actions" style="display: flex; flex-direction: column; align-items: center; gap: 20px; margin-top: 30px;">
+                <button type="submit" class="btn-vault-master">
+                    Initialize Account
+                </button>
+                <div style="text-align: center; border-top: 1px solid rgba(139, 94, 60, 0.1); width: 100%; padding-top: 20px;">
+                    <p style="color: #666; font-size: 0.8rem;">
+                        Already a member? 
+                        <a href="{% url 'login' %}" style="margin-left: 8px; color: var(--gold); text-decoration: none; font-weight: 700; letter-spacing: 1px;">SIGN IN</a>
+                    </p>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    /* ⚡ THE SAVVY METALLIC BUTTON ⚡ */
+    .btn-vault-master {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, #8b5e3c 0%, #b8860b 50%, #8b5e3c 100%);
+        background-size: 200% auto;
+        color: #000;
+        border: 1px solid rgba(184, 134, 11, 0.3);
+        border-radius: 4px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-vault-master:hover {
+        background-position: right center;
+        transform: translateY(-1px);
+        box-shadow: 0 5px 20px rgba(139, 94, 60, 0.3);
+        filter: brightness(1.1);
+    }
+
+    .registration-form-fields p { margin-bottom: 18px; color: #888; font-size: 0.8rem; }
+    .registration-form-fields label { 
+        display: block; margin-bottom: 8px; color: var(--gold); 
+        text-transform: uppercase; font-size: 0.65rem; letter-spacing: 1.5px; font-weight: 600;
+    }
+    .registration-form-fields input {
+        width: 100%; padding: 12px; background: rgba(20, 20, 20, 0.8) !important;
+        border: 1px solid #333 !important; border-radius: 4px; color: #fff !important;
+        box-sizing: border-box; font-size: 0.9rem;
+    }
+    .registration-form-fields input:focus { border-color: var(--gold) !important; outline: none; }
+    .helptext { display: block; font-size: 0.65rem; color: #555; margin-top: 8px; line-height: 1.3; font-style: italic; }
+</style>
+{% endblock %}

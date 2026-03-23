@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="profile-hero" style="height: 65vh; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #000;">
+    <div style="position: absolute; inset: 0; background-image: url('{% static 'images/whisky_hero_background.png' %}'); background-size: cover; background-position: center; filter: brightness(30%) grayscale(100%); transform: scale(1.1);"></div>
+    
+    <div style="position: absolute; font-family: 'Playfair Display'; font-size: 25rem; color: var(--gold); opacity: 0.05; z-index: 1; user-select: none;">W</div>
+
+    <div style="position: relative; z-index: 10; text-align: center;">
+        <div style="margin-bottom: 30px; position: relative; display: inline-block;">
+            {% if user.profile_picture %}
+                <img src="{{ user.profile_picture.url }}" 
+                     style="width: 140px; height: 140px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; box-shadow: 0 0 30px rgba(139, 94, 60, 0.3); padding: 5px; background: #000;">
+            {% else %}
+                <div style="width: 140px; height: 140px; border-radius: 50%; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; margin: 0 auto; background: rgba(139, 94, 60, 0.1); backdrop-filter: blur(10px); box-shadow: 0 0 30px rgba(139, 94, 60, 0.2);">
+                    <i class="fas fa-user-shield" style="color: var(--gold); font-size: 3.5rem;"></i>
+                </div>
+            {% endif %}
+            
+            {% if user.country %}
+                <img src="{{ user.country.flag }}" title="{{ user.country.name }}" 
+                     style="position: absolute; bottom: 5px; right: 5px; height: 35px; border-radius: 4px; border: 2px solid #000; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+            {% endif %}
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
+            <h1 class="playfair" style="color: var(--gold); font-size: clamp(2.5rem, 5vw, 4.5rem); margin: 0; letter-spacing: 5px; text-transform: uppercase;">
+                {{ user.username }}
+            </h1>
+        </div>
+        
+        <p style="color: #fff; letter-spacing: 3px; text-transform: uppercase; margin-top: 15px; font-size: 0.85rem; opacity: 0.8;">
+            <span style="color: var(--gold); font-weight: 700;">Executive Archivist</span> 
+            {% if user.bio %}<span style="margin: 0 15px; opacity: 0.3;">|</span> {{ user.bio }}{% endif %}
+        </p>
+
+        <div style="margin-top: 40px;">
+            <a href="{% url 'edit_profile' %}" class="vault-btn-outline" style="padding: 14px 35px; border: 1px solid var(--gold); color: var(--gold); text-decoration: none; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 3px; transition: 0.4s; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); display: inline-block;">
+                Modify Credentials
+            </a>
+        </div>
+    </div>
+</section>
+
+<div style="background: #050505; padding: 100px 8%; position: relative;">
+    
+    <div style="margin-bottom: 120px;">
+        <h2 class="playfair section-title">My Shared Legacy</h2>
+        <div class="scroll-wrapper">
+            <div class="profile-grid">
+                {% for recipe in user_recipes %}
+                <div class="profile-card" style="cursor: pointer;">
+                    <div class="card-img-container" onclick="window.location.href='{% url 'recipe_detail' recipe.pk %}'">
+                        <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}">
+                        <div class="card-actions-overlay">
+                            <div onclick="event.stopPropagation();" style="display: flex; gap: 15px;">
+                                <a href="{% url 'recipe_update' recipe.pk %}" class="action-btn">Edit</a>
+                                <button type="button" onclick="openPurgeModal('{{ recipe.pk }}', '{{ recipe.title|escapejs }}')" class="action-btn delete">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-details" onclick="window.location.href='{% url 'recipe_detail' recipe.pk %}'">
+                        <span class="meta-tag">{{ recipe.meal_type|title }}</span>
+                        <h3>{{ recipe.title }}</h3>
+                    </div>
+                </div>
+                {% empty %}
+                    <p class="empty-msg">YOUR CONTRIBUTION TO THE LEGACY IS PENDING...</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-bottom: 120px;">
+        <h2 class="playfair section-title">Liked Recipes ❤️</h2>
+        <div class="scroll-wrapper">
+            <div class="profile-grid">
+                {% for recipe in liked_recipes %}
+                <div class="profile-card" style="cursor: pointer;" onclick="window.location.href='{% url 'recipe_detail' recipe.pk %}'">
+                    <div class="card-img-container">
+                        <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}">
+                        <div class="card-actions-overlay">
+                            <span class="action-btn">Inspect Archive</span>
+                        </div>
+                    </div>
+                    <div class="card-details">
+                        <span class="meta-tag">By {{ recipe.author.username }}</span>
+                        <h3>{{ recipe.title }}</h3>
+                        <form action="{% url 'like_recipe' recipe.pk %}" method="POST" style="margin-top: 15px;" onclick="event.stopPropagation();">
+                            {% csrf_token %}
+                            <button type="submit" class="remove-btn">Remove Endorsement</button>
+                        </form>
+                    </div>
+                </div>
+                {% empty %}
+                    <p class="empty-msg">NO ARTIFACTS HAVE RECEIVED YOUR OFFICIAL ENDORSEMENT.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <h2 class="playfair section-title">Preserved for Later 🔖</h2>
+        <div class="scroll-wrapper">
+            <div class="profile-grid">
+                {% for recipe in saved_recipes %}
+                <div class="profile-card" style="cursor: pointer;" onclick="window.location.href='{% url 'recipe_detail' recipe.pk %}'">
+                    <div class="card-img-container">
+                        <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}">
+                        <div class="card-actions-overlay">
+                            <span class="action-btn">Open Vault</span>
+                        </div>
+                    </div>
+                    <div class="card-details">
+                        <span class="meta-tag">By {{ recipe.author.username }}</span>
+                        <h3>{{ recipe.title }}</h3>
+                        <form action="{% url 'save_recipe' recipe.pk %}" method="POST" style="margin-top: 15px;" onclick="event.stopPropagation();">
+                            {% csrf_token %}
+                            <button type="submit" class="remove-btn">Remove from Collection</button>
+                        </form>
+                    </div>
+                </div>
+                {% empty %}
+                    <p class="empty-msg">NO ARTIFACTS SAVED TO YOUR PRIVATE COLLECTION.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="purgeModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(15px); opacity: 0; transition: opacity 0.4s ease;">
+    <div class="glass-card" style="max-width: 450px; width: 90%; padding: 45px; text-align: center; border: 1px solid rgba(139, 94, 60, 0.3); background: rgba(13, 13, 13, 0.98); border-radius: 12px; box-shadow: 0 25px 50px rgba(0,0,0,1);">
+        <i class="fas fa-exclamation-circle" style="color: #8b0000; font-size: 3.5rem; margin-bottom: 25px;"></i>
+        <h2 class="playfair" style="font-size: 2.2rem; color: #fff; margin-bottom: 15px; letter-spacing: 2px;">Purge Archive?</h2>
+        <p style="color: #888; font-size: 0.9rem; line-height: 1.6; margin-bottom: 35px;">
+            Are you certain you wish to permanently erase <br>
+            <span id="purgeTitle" style="color: var(--gold); font-weight: 700; letter-spacing: 1px;"></span>?
+        </p>
+        <form id="purgeForm" method="POST" action="">
+            {% csrf_token %}
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <button type="submit" class="btn-vault-purge-final">Confirm Deletion</button>
+                <button type="button" onclick="closePurgeModal()" class="btn-cancel-vault">Abort & Return</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openPurgeModal(id, title) {
+        const modal = document.getElementById('purgeModal');
+        document.getElementById('purgeTitle').innerText = '"' + title.toUpperCase() + '"';
+        document.getElementById('purgeForm').action = "/recipe/" + id + "/delete/"; 
+        modal.style.display = 'flex';
+        setTimeout(() => { modal.style.opacity = '1'; }, 10);
+    }
+    function closePurgeModal() {
+        const modal = document.getElementById('purgeModal');
+        modal.style.opacity = '0';
+        setTimeout(() => { modal.style.display = 'none'; }, 400);
+    }
+</script>
+
+<style>
+    /* GLOBAL ARCHIVE STYLES */
+    .section-title { color: var(--gold); font-size: 2.2rem; margin-bottom: 50px; letter-spacing: 4px; text-transform: uppercase; border-left: 3px solid var(--gold); padding-left: 25px; }
+    .empty-msg { color: #444; letter-spacing: 2px; font-size: 0.8rem; text-transform: uppercase; }
+
+    .scroll-wrapper { position: relative; width: 100%; }
+    .scroll-wrapper::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 100px; background: linear-gradient(to right, transparent, #050505); pointer-events: none; z-index: 5; }
+
+    .profile-grid { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 40px; padding-bottom: 40px; scroll-snap-type: x mandatory; scrollbar-width: none; -ms-overflow-style: none; }
+    .profile-grid::-webkit-scrollbar { display: none; }
+
+    .profile-card { flex: 0 0 350px; scroll-snap-align: start; background: #0a0a0a; border: 1px solid rgba(139, 94, 60, 0.1); transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); overflow: hidden; }
+    .card-img-container { position: relative; height: 300px; overflow: hidden; }
+    .card-img-container img { width: 100%; height: 100%; object-fit: cover; transition: 0.8s ease; }
+
+    .card-actions-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; gap: 15px; opacity: 0; transition: 0.4s ease; backdrop-filter: blur(5px); text-decoration: none; }
+
+    .action-btn { padding: 10px 20px; border: 1px solid var(--gold); color: var(--gold); text-decoration: none; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; background: transparent; cursor: pointer; transition: 0.3s; }
+    .action-btn:hover { background: var(--gold); color: #000; }
+    .action-btn.delete { border-color: #8b0000; color: #ff4444; }
+    .action-btn.delete:hover { background: #8b0000; color: #fff; }
+
+    .btn-vault-purge-final { width: 100%; padding: 16px; border: none; border-radius: 4px; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; font-size: 0.8rem; cursor: pointer; transition: 0.5s ease; background: linear-gradient(135deg, #4b0000 0%, #8b0000 50%, #4b0000 100%); background-size: 200% auto; color: #fff; }
+    .btn-vault-purge-final:hover { background-position: right center; filter: brightness(1.2); transform: translateY(-2px); }
+    .btn-cancel-vault { background: transparent; border: none; color: #666; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; cursor: pointer; padding: 10px; font-size: 0.75rem; transition: 0.3s; }
+    .btn-cancel-vault:hover { color: #fff; letter-spacing: 4px; }
+
+    .remove-btn { background: none; border: none; color: #555; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: 0.3s; }
+    .remove-btn:hover { color: var(--gold); text-shadow: 0 0 10px var(--gold); }
+
+    .card-details { padding: 30px; text-align: center; }
+    .meta-tag { color: var(--gold); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 3px; opacity: 0.7; }
+    .card-details h3 { color: #fff; font-family: 'Playfair Display', serif; font-size: 1.4rem; margin: 10px 0 0; letter-spacing: 1px; }
+
+    .profile-card:hover { border-color: var(--gold); transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+    .profile-card:hover img { transform: scale(1.1); }
+    .profile-card:hover .card-actions-overlay { opacity: 1; }
+    .vault-btn-outline:hover { background: var(--gold) !important; color: #000 !important; box-shadow: 0 0 20px rgba(139, 94, 60, 0.4); }
+</style>
+{% endblock %}
