@@ -26,9 +26,22 @@
                 {{ object.title }}
             </h1>
             
-            <p style="color: #666; font-family: 'Poppins', sans-serif; font-style: italic; letter-spacing: 1px;">
-                Authored by <span style="color: var(--gold); font-style: normal;">{{ object.author }}</span> — Documented {{ object.created_at|date:"F d, Y" }}
+            <div class="publisher-info" style="margin-top: 25px; display: flex; justify-content: center; align-items: center; gap: 10px;">
+                <span style="color: #888; font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase;">Verified Publisher:</span>
+                <span style="background: rgba(184, 134, 11, 0.1); border: 1px solid rgba(184, 134, 11, 0.3); color: var(--gold); padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; letter-spacing: 1px;">
+                    <i class="fas fa-user-shield" style="margin-right: 5px; font-size: 0.7rem;"></i> {{ object.author|upper }}
+                </span>
+            </div>
+
+            <p style="color: #555; font-family: 'Poppins', sans-serif; font-size: 0.7rem; letter-spacing: 1px; margin-top: 10px; text-transform: uppercase;">
+                Archive Secured: {{ object.created_at|date:"F d, Y" }}
             </p>
+
+            <div class="recipe-description-box" style="max-width: 800px; margin: 30px auto 0 auto; padding: 20px; border-left: 2px solid var(--gold); background: rgba(255,255,255,0.03);">
+                <p style="color: #ccc; font-size: 1.1rem; line-height: 1.6; font-family: 'Playfair Display', serif; font-style: italic;">
+                    "{{ object.description }}"
+                </p>
+            </div>
         </div>
 
         <div class="detail-image-frame" style="width: 100%; height: 600px; border: 1px solid rgba(139, 94, 60, 0.3); overflow: hidden; margin-bottom: 60px; box-shadow: 0 0 40px rgba(0,0,0,0.8); position: relative;">
